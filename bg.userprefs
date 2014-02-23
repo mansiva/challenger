@@ -1,0 +1,14 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/scripts/BG_GameController.boo">
+    <Files>
+      <File FileName="Assets/scripts/BG_Board.cs" Line="11" Column="1" />
+      <File FileName="Assets/scripts/BG_Token.cs" Line="5" Column="16" />
+      <File FileName="Assets/scripts/BG_GameController.boo" Line="10" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
