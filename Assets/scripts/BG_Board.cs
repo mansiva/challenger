@@ -35,7 +35,7 @@ public class BG_Board : MonoBehaviour {
 			// coudn t find a clean way to make it flat before.
 			tokens[i].transform.Rotate(270,0,0);
 			// Set the color (Peon would be the class attached to the prefab peon that contains a public field of type Color)
-			tokens[i].renderer.material.color = i < 15 ? Color.black : Color.white;
+			//tokens[i].renderer.material.color = i < 15 ? Color.black : Color.white;
 		}
 
 	}
