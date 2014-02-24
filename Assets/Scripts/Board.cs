@@ -27,6 +27,8 @@ namespace Backgammon
 		// ---------------------------------------------------------------------------
 		void Start ()
 		{
+			Slot.board = this;
+
 			// Create the 24 slots
 			Vector2 slotPos = new Vector2 (spineWidth + 6 * slotWidth, slotHeight);
 			for (int i = 0; i < 6; i++)
@@ -81,8 +83,7 @@ namespace Backgammon
 				for (int j = 0; j < initQty[i]; j++)
 				{
 					// light
-					Slot slot = slots[ initPos[i] ];
-					slot.AddToken(tokens[k]);
+					slots[ initPos[i] ].AddToken(tokens[k]);
 					k++;
 				}
 			}
@@ -92,9 +93,7 @@ namespace Backgammon
 				for (int j = 0; j < initQty[i]; j++)
 				{
 					// dark
-					Slot slot = slots[ 23 - initPos[i] ];
-					slot.tokens.Add(tokens[k]);
-					tokens[k].transform.localPosition = new Vector3(slot.position.x, 0, slot.position.y);
+					slots[ 23 - initPos[i] ].AddToken(tokens[k]);
 					k++;
 				}
 			}
