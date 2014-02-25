@@ -10,7 +10,7 @@ namespace Backgammon
 		public float borderWidth;
 		public float slotWidth;
 		public float slotHeight;
-
+		public float tokenWidth;
 
 		public enum Side
 		{
@@ -43,6 +43,7 @@ namespace Backgammon
 		void Start ()
 		{
 			Slot.board = this;
+			Token.board = this;
 
 			// Create the 24 slots. 0 is actually slot 1 lower right corner
 			for (int i = 0; i < 24; i++)
@@ -105,6 +106,7 @@ namespace Backgammon
 				}
 			}
 			homeDark.AddToken(slots[0].RemoveToken());
+			homeLight.AddToken(slots[5].RemoveToken());
 			homeLight.AddToken(slots[5].RemoveToken());
 		}
 

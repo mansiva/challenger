@@ -6,11 +6,11 @@ namespace Backgammon
 
 	public class Token : MonoBehaviour
 	{
+		public static Board board;
 		public Color tokenColorDark;
 		public Color tokenColorLight;
 		private Board.Side side;
 		public Board.TokenState state;
-
 		// Use this for initialization
 		void Start ()
 		{
@@ -32,13 +32,16 @@ namespace Backgammon
 		{
 			state = tokenState;
 			if (tokenState == Board.TokenState.home){
-				//transform.localPosition.z = parent.slotWidth;
-				if (side == Board.Side.light)
+				transform.localPosition = new Vector3(0,5f,0);
+				if (side == Board.Side.light){
 					transform.localRotation = Quaternion.identity;
-				else
+				}
+				else{
 					transform.localRotation = Quaternion.Euler(180, 0, 0);
+				}
 			}
 			else if (tokenState == Board.TokenState.onBoard){
+				transform.localPosition = new Vector3(0,0,0);
 				transform.localRotation = Quaternion.Euler(270, 0, 0);
 			}
 			else if (tokenState == Board.TokenState.captured)

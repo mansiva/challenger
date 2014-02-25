@@ -14,9 +14,9 @@ namespace Backgammon
 		{
 			Vector2 slotPos = new Vector2();
 			if (id == (int)Board.Side.light)
-				slotPos = new Vector2 (board.spineWidth/2.0f + 7 * board.slotWidth + board.borderWidth, - board.slotHeight - board.slotWidth / 2.0f);
+				slotPos = new Vector2 (board.spineWidth/2.0f + 7 * board.slotWidth + board.borderWidth, - board.slotHeight);
 			else
-				slotPos = new Vector2 (board.spineWidth/2.0f + 7 * board.slotWidth + board.borderWidth,   board.slotHeight + board.slotWidth / 2.0f);
+				slotPos = new Vector2 (board.spineWidth/2.0f + 7 * board.slotWidth + board.borderWidth,   board.slotHeight);
 			return slotPos;
 		}
 
@@ -32,7 +32,7 @@ namespace Backgammon
 		public override float offset(int id, int count)
 		{
 			// offset is the position on that slot based on the provided count
-			float offset = board.slotWidth * (count - 0.5f);
+			float offset = board.tokenWidth * (count - 1);
 			// this offset is different if we're on the upper or lower side of the board
 			if (id == (int)Board.Side.dark)
 				offset *= -1;
