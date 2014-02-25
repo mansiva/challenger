@@ -51,19 +51,19 @@ namespace Backgammon
 				// TokenStack(int id, Vector3 startposition, Vector3 orientation, Vector3 offset)
 				if (id < 6){
 					slotPos = new Vector3 (this.spineWidth/2.0f + (5.5f - id) * this.slotWidth, 0.1f, -this.slotHeight + this.slotWidth/2.0f);
-					slots[id] = new TokenStack(id, slotPos, orientation,offset);
+					slots[id] = new TokenStack(slotPos, orientation,offset);
 				}
 				else if (id < 12) {
 					slotPos = new Vector3 (-this.spineWidth/2.0f + (5.5f - id) * this.slotWidth,  0.1f, -this.slotHeight + this.slotWidth/2.0f);
-					slots[id] = new TokenStack(id, slotPos, orientation,offset);
+					slots[id] = new TokenStack(slotPos, orientation,offset);
 				}
 				else if (id < 18){
 					slotPos = new Vector3 (-this.spineWidth/2.0f + (id - 17.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
-					slots[id] = new TokenStack(id, slotPos, orientation,-offset);
+					slots[id] = new TokenStack(slotPos, orientation,-offset);
 				}
 				else if (id < 24){
 					slotPos = new Vector3 (this.spineWidth/2.0f + (id - 17.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
-					slots[id] = new TokenStack(id, slotPos, orientation,-offset);
+					slots[id] = new TokenStack(slotPos, orientation,-offset);
 				}
 			}
 
@@ -71,12 +71,12 @@ namespace Backgammon
 			orientation = new Vector3 (0,0,0);
 			offset = new Vector3 (0, 0, this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, -this.slotHeight);
-			homeDark = new TokenStack((int)Side.dark, slotPos, orientation,offset);
+			homeDark = new TokenStack(slotPos, orientation,offset);
 			// and light
 			orientation = new Vector3 (180,0,0);
 			offset = new Vector3 (0, 0, -this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, this.slotHeight);
-			homeLight = new TokenStack((int)Side.light, slotPos, orientation,offset);
+			homeLight = new TokenStack(slotPos, orientation,offset);
 
 			// Create Capture Zones for dark and light
 //			capturedDark = new Capture(Side.dark);

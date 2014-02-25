@@ -7,16 +7,13 @@ namespace Backgammon
 	// Homes and Captures are subclasses of Slots.
 	public class TokenStack
 	{
-
-		public int id { get; private set; }
 		public Vector3 startPosition { get; private set; }
 		public Vector3 orientation;
 		public Vector3 offset;
 		public Stack<Token> tokens;
 			
-		public TokenStack(int id, Vector3 position, Vector3 orientation, Vector3 offset)
+		public TokenStack(Vector3 position, Vector3 orientation, Vector3 offset)
 		{
-			this.id = id;
 			this.startPosition = position;
 			this.orientation = orientation;
 			this.offset = offset;
