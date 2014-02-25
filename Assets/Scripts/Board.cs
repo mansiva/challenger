@@ -30,8 +30,10 @@ namespace Backgammon
 		private TokenStack[] slots = new TokenStack[24];
 		private TokenStack homeDark;
 		private TokenStack homeLight;
+		private TokenStack[] homes = new TokenStack[2];
 		private TokenStack capturedDark;
 		private TokenStack capturedLight;
+		private TokenStack[] captured = new TokenStack[2];
 
 		private Token[] tokens = new Token[30];
 
@@ -76,11 +78,13 @@ namespace Backgammon
 			offset = new Vector3 (0, 0, this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, -this.slotHeight);
 			homeDark = new TokenStack(slotPos, orientation,offset);
+			homes[Board.Side.dark] = new TokenStack(slotPos, orientation,offset);
 			// and light
 			orientation = new Vector3 (180,0,0);
 			offset = new Vector3 (0, 0, -this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, this.slotHeight);
 			homeLight = new TokenStack(slotPos, orientation,offset);
+			homes[Board.Side.light] = new TokenStack(slotPos, orientation,offset);
 
 			// Create Capture Zones for dark
 			orientation = new Vector3 (270,0,0);
