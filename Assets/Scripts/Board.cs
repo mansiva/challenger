@@ -12,12 +12,13 @@ namespace Backgammon
 		public float slotHeight;
 		public float tokenWidth;
 
+		// right now player is light, and opponent is dark
 		public enum Side
 		{
 			light,
 			dark
 		}
-
+		//maybe useful later
 		public enum TokenState
 		{
 			onBoard,
@@ -25,9 +26,12 @@ namespace Backgammon
 			home
 		}
 
+		// stack zones : slots, homes and captures
 		private TokenStack[] slots = new TokenStack[24];
 		private TokenStack homeDark;
 		private TokenStack homeLight;
+		private TokenStack capturedDark;
+		private TokenStack capturedLight;
 
 		private Token[] tokens = new Token[30];
 
@@ -78,9 +82,16 @@ namespace Backgammon
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, this.slotHeight);
 			homeLight = new TokenStack(slotPos, orientation,offset);
 
-			// Create Capture Zones for dark and light
-//			capturedDark = new Capture(Side.dark);
-//			capturedLight = new Capture(Side.light);
+			// Create Capture Zones for dark
+			orientation = new Vector3 (270,0,0);
+			offset = new Vector3 (0, 0, -this.slotWidth);
+			slotPos = new Vector3(0, 0.1f, -this.slotWidth/2.0f);
+			capturedDark = new TokenStack(slotPos, orientation,offset);
+			// and light
+			orientation = new Vector3 (270,0,0);
+			offset = new Vector3 (0, 0, this.slotWidth);
+			slotPos = new Vector3(0, 0.1f, this.slotWidth/2.0f);
+			capturedLight = new TokenStack(slotPos, orientation,offset);
 
 			// Create the 30 Tokens
 			GameObject prefabPeon = Resources.Load<GameObject>("Token");
@@ -96,7 +107,7 @@ namespace Backgammon
 			}
 
 			ResetTokens();
-			TEST_HOME ();
+			TESTS ();
 		}
 
 		// ---------------------------------------------------------------------------
@@ -129,10 +140,12 @@ namespace Backgammon
 			}
 		}
 
-		public void TEST_HOME(){
+		public void TESTS(){
 			// TEST THINGS
 			homeDark.AddToken (slots [0].RemoveToken ());
 			homeLight.AddToken (slots [5].RemoveToken ());
+			capturedDark.AddToken (slots [0].RemoveToken ());
+			capturedLight.AddToken (slots [5].RemoveToken ());
 			homeLight.AddToken (slots [5].RemoveToken ());
 
 		}
