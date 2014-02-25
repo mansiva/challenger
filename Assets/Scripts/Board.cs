@@ -7,13 +7,28 @@ namespace Backgammon
 	public class Board : MonoBehaviour
 	{
 		public float spineWidth;
+		public float borderWidth;
 		public float slotWidth;
 		public float slotHeight;
 
-		public Color tokenColorDark;
-		public Color tokenColorLight;
+
+		public enum Side
+		{
+			light,
+			dark
+		}
+
+		public enum TokenState
+		{
+			onBoard,
+			captured,
+			home
+		}
 
 		private Slot[] slots = new Slot[24];
+		private Home homeDark;
+		private Home homeLight;
+
 		private Token[] tokens = new Token[30];
 
 		// I don't know how to create tupples, so I create tables, 
@@ -29,32 +44,19 @@ namespace Backgammon
 		{
 			Slot.board = this;
 
-			// Create the 24 slots
-			Vector2 slotPos = new Vector2 (spineWidth + 6 * slotWidth, slotHeight);
-			for (int i = 0; i < 6; i++)
+			// Create the 24 slots. 0 is actually slot 1 lower right corner
+			for (int i = 0; i < 24; i++)
 			{
-				slotPos.x -= slotWidth;
-				slots[i] = new Slot(i, slotPos);
+				slots[i] = new Slot(i);
 			}
-			slotPos.x -= spineWidth;
-			for (int i = 6; i < 12; i++)
-			{
-				slotPos.x -= slotWidth;
-				slots[i] = new Slot(i, slotPos);
-			}
-			slotPos.x -= slotWidth;
-			slotPos.y -= 2 * slotHeight;
-			for (int i = 12; i < 18; i++)
-			{
-				slotPos.x += slotWidth;
-				slots[i] = new Slot(i, slotPos);
-			}
-			slotPos.x += spineWidth;
-			for (int i = 18; i < 24; i++)
-			{
-				slotPos.x += slotWidth;
-				slots[i] = new Slot(i, slotPos);
-			}
+
+			// Create Homes for dark and light
+			homeDark = new Home((int)Side.dark);
+			homeLight = new Home((int)Side.light);
+
+			// Create Capture Zones for dark and light
+//			capturedDark = new Capture(Side.dark);
+//			capturedLight = new Capture(Side.light);
 
 			// Create the 30 Tokens
 			GameObject prefabPeon = Resources.Load<GameObject>("Token");
@@ -62,17 +64,22 @@ namespace Backgammon
 			for (int i = 0; i < 30; i++)
 			{
 				tokens[i] = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
-				tokens[i].renderer.material.color = i < 15 ? tokenColorLight : tokenColorDark;
+				if (i < 15)
+					tokens[i].setSide(Side.light);
+				else
+					tokens[i].setSide(Side.dark);
+
 			}
 
-			ResetTokens ();
+			ResetTokens();
+
 		}
 
 
 		// ---------------------------------------------------------------------------
 		// place all tokens in a startPosition
 		// ---------------------------------------------------------------------------
-		void ResetTokens()
+		public void ResetTokens()
 		{
 			// light player vs dark player light 1 - 24, dark 24 - 1
 			// light : 24:2, 13:5, 8:3, 6:5
@@ -97,6 +104,8 @@ namespace Backgammon
 					k++;
 				}
 			}
+			homeDark.AddToken(slots[0].RemoveToken());
+			homeLight.AddToken(slots[5].RemoveToken());
 		}
 
 	}

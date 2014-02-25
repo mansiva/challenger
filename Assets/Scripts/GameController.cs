@@ -15,6 +15,8 @@ namespace Backgammon
 			GameObject boardObject = NGUITools.AddChild(gameObject, prefabBoard);
 			// Get script Board attached to prefab
 			board = boardObject.GetComponent<Board>();	
+
+//			board.ResetTokens ();
 		}
 		
 		// Update is called once per frame
