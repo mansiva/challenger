@@ -6,7 +6,7 @@ namespace Backgammon
 
 	public class Token : MonoBehaviour
 	{
-		public static Board board;
+		//public static Board board;
 		public Color tokenColorDark;
 		public Color tokenColorLight;
 		private Board.Side side;
@@ -31,22 +31,6 @@ namespace Backgammon
 		public void setState(Board.TokenState tokenState)
 		{
 			state = tokenState;
-			if (tokenState == Board.TokenState.home){
-				transform.localPosition = new Vector3(0,5f,0);
-				if (side == Board.Side.light){
-					transform.localRotation = Quaternion.identity;
-				}
-				else{
-					transform.localRotation = Quaternion.Euler(180, 0, 0);
-				}
-			}
-			else if (tokenState == Board.TokenState.onBoard){
-				transform.localPosition = new Vector3(0,0,0);
-				transform.localRotation = Quaternion.Euler(270, 0, 0);
-			}
-			else if (tokenState == Board.TokenState.captured)
-				transform.localEulerAngles = Vector3.zero;
-
 		}
 
 		// Update is called once per frame

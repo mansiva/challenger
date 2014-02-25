@@ -1564,10 +1564,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spineWidth: 1
+  borderWidth: .5
   slotWidth: 1
   slotHeight: 6
-  tokenColorDark: {r: .105697803, g: .319530755, b: .34117648, a: 1}
-  tokenColorLight: {r: .763506353, g: .968627453, b: .867495298, a: 1}
+  tokenWidth: .200000003
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

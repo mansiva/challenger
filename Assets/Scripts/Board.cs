@@ -25,9 +25,9 @@ namespace Backgammon
 			home
 		}
 
-		private Slot[] slots = new Slot[24];
-		private Home homeDark;
-		private Home homeLight;
+		private TokenStack[] slots = new TokenStack[24];
+		private TokenStack homeDark;
+		private TokenStack homeLight;
 
 		private Token[] tokens = new Token[30];
 
@@ -42,18 +42,41 @@ namespace Backgammon
 		// ---------------------------------------------------------------------------
 		void Start ()
 		{
-			Slot.board = this;
-			Token.board = this;
-
 			// Create the 24 slots. 0 is actually slot 1 lower right corner
-			for (int i = 0; i < 24; i++)
+			Vector3 orientation = new Vector3 (270,0,0);
+			Vector3 offset = new Vector3 (0, 0, this.slotWidth);
+			Vector3 slotPos = new Vector3();
+			for (int id = 0; id < 24; id++)
 			{
-				slots[i] = new Slot(i);
+				// TokenStack(int id, Vector3 startposition, Vector3 orientation, Vector3 offset)
+				if (id < 6){
+					slotPos = new Vector3 (this.spineWidth/2.0f + (5.5f - id) * this.slotWidth, 0.1f, -this.slotHeight + this.slotWidth/2.0f);
+					slots[id] = new TokenStack(id, slotPos, orientation,offset);
+				}
+				else if (id < 12) {
+					slotPos = new Vector3 (-this.spineWidth/2.0f + (5.5f - id) * this.slotWidth,  0.1f, -this.slotHeight + this.slotWidth/2.0f);
+					slots[id] = new TokenStack(id, slotPos, orientation,offset);
+				}
+				else if (id < 18){
+					slotPos = new Vector3 (-this.spineWidth/2.0f + (id - 17.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
+					slots[id] = new TokenStack(id, slotPos, orientation,-offset);
+				}
+				else if (id < 24){
+					slotPos = new Vector3 (this.spineWidth/2.0f + (id - 17.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
+					slots[id] = new TokenStack(id, slotPos, orientation,-offset);
+				}
 			}
 
-			// Create Homes for dark and light
-			homeDark = new Home((int)Side.dark);
-			homeLight = new Home((int)Side.light);
+			// Create Home for dark
+			orientation = new Vector3 (0,0,0);
+			offset = new Vector3 (0, 0, this.tokenWidth);
+			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, -this.slotHeight);
+			homeDark = new TokenStack((int)Side.dark, slotPos, orientation,offset);
+			// and light
+			orientation = new Vector3 (180,0,0);
+			offset = new Vector3 (0, 0, -this.tokenWidth);
+			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, this.slotHeight);
+			homeLight = new TokenStack((int)Side.light, slotPos, orientation,offset);
 
 			// Create Capture Zones for dark and light
 //			capturedDark = new Capture(Side.dark);
@@ -73,9 +96,8 @@ namespace Backgammon
 			}
 
 			ResetTokens();
-
+			TEST_HOME ();
 		}
-
 
 		// ---------------------------------------------------------------------------
 		// place all tokens in a startPosition
@@ -105,10 +127,14 @@ namespace Backgammon
 					k++;
 				}
 			}
-			homeDark.AddToken(slots[0].RemoveToken());
-			homeLight.AddToken(slots[5].RemoveToken());
-			homeLight.AddToken(slots[5].RemoveToken());
 		}
 
+		public void TEST_HOME(){
+			// TEST THINGS
+			homeDark.AddToken (slots [0].RemoveToken ());
+			homeLight.AddToken (slots [5].RemoveToken ());
+			homeLight.AddToken (slots [5].RemoveToken ());
+
+		}
 	}
 }
