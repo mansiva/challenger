@@ -77,25 +77,25 @@ namespace Backgammon
 			orientation = new Vector3 (0,0,0);
 			offset = new Vector3 (0, 0, this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, -this.slotHeight);
-			homeDark = new TokenStack(slotPos, orientation,offset);
-			homes[Board.Side.dark] = new TokenStack(slotPos, orientation,offset);
+			homes[(int)Board.Side.dark] = new TokenStack(slotPos, orientation,offset);
+
 			// and light
 			orientation = new Vector3 (180,0,0);
 			offset = new Vector3 (0, 0, -this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, this.slotHeight);
-			homeLight = new TokenStack(slotPos, orientation,offset);
-			homes[Board.Side.light] = new TokenStack(slotPos, orientation,offset);
+			homes[(int)Board.Side.light] = new TokenStack(slotPos, orientation,offset);
 
 			// Create Capture Zones for dark
 			orientation = new Vector3 (270,0,0);
 			offset = new Vector3 (0, 0, -this.slotWidth);
 			slotPos = new Vector3(0, 0.1f, -this.slotWidth/2.0f);
-			capturedDark = new TokenStack(slotPos, orientation,offset);
+			captured[(int)Board.Side.dark] = new TokenStack(slotPos, orientation,offset);
+
 			// and light
 			orientation = new Vector3 (270,0,0);
 			offset = new Vector3 (0, 0, this.slotWidth);
 			slotPos = new Vector3(0, 0.1f, this.slotWidth/2.0f);
-			capturedLight = new TokenStack(slotPos, orientation,offset);
+			captured[(int)Board.Side.light] = new TokenStack(slotPos, orientation,offset);
 
 			// Create the 30 Tokens
 			GameObject prefabPeon = Resources.Load<GameObject>("Token");
@@ -110,8 +110,8 @@ namespace Backgammon
 
 			}
 
-			ResetTokens();
-			TESTS ();
+			//ResetTokens();
+			//TESTS ();
 		}
 
 		// ---------------------------------------------------------------------------
@@ -146,12 +146,8 @@ namespace Backgammon
 
 		public void TESTS(){
 			// TEST THINGS
-			homeDark.AddToken (slots [0].RemoveToken ());
-			homeLight.AddToken (slots [5].RemoveToken ());
-			capturedDark.AddToken (slots [0].RemoveToken ());
-			capturedLight.AddToken (slots [5].RemoveToken ());
-			homeLight.AddToken (slots [5].RemoveToken ());
-
+			homes[(int)Board.Side.dark].AddToken (slots [0].RemoveToken ());
+			captured[(int)Board.Side.dark].AddToken (slots [0].RemoveToken ());
 		}
 	}
 }

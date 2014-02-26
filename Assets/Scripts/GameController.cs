@@ -16,7 +16,7 @@ namespace Backgammon
 			// Get script Board attached to prefab
 			board = boardObject.GetComponent<Board>();	
 
-//			board.ResetTokens ();
+			board.ResetTokens ();
 		}
 		
 		// Update is called once per frame
