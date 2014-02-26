@@ -15,14 +15,14 @@ namespace Backgammon
 
 	public struct BGPoint
 	{
-		public byte qty;
+		public int qty;
 		public Board.Side side;
 	}
 
 	public struct Move
 	{
-		public byte  source;
-		public byte dest;
+		public int  source;
+		public int dest;
 	}
 
 	public class BGRules
@@ -36,18 +36,18 @@ namespace Backgammon
 		// Copy slots and captures into points table
 		public void InitBoard(TokenStack[] slots, TokenStack[] captured){
 			for(int i=1; i<25 ; i++){
-				points[i].qty = (byte)slots[i].Count();
+				points[i].qty = (int)slots[i].Count();
 				points[i].side = slots[i].side;
 			}
-			points[0].qty = (byte)captured[(int)Board.Side.light].Count();
-			points[25].qty = (byte)captured[(int)Board.Side.dark].Count();
+			points[0].qty = (int)captured[(int)Board.Side.light].Count();
+			points[25].qty = (int)captured[(int)Board.Side.dark].Count();
 		}
 
 		// returns a list of solutions (= list of moves)
-		public List<List <Move>> AllSolutions(byte die1, byte die2, Board.Side side){
+		public List<List <Move>> AllSolutions(int die1, int die2, Board.Side side){
 			List<List <Move>> result = new List<List <Move>> ();
 			// doubles or singles
-			List<byte> dice = new List<byte> ();
+			List<int> dice = new List<int> ();
 			if (die1 == die2) {
 				dice.Add(die1);
 				dice.Add(die1);
@@ -61,7 +61,7 @@ namespace Backgammon
 			return result;
 		}
 		
-		public List<List <Move>>  Compute(List<byte> dice, List<Move> currentSolution, BGPoint[] points){
+		public List<List <Move>>  Compute(List<int> dice, List<Move> currentSolution, BGPoint[] points){
 			if dice.Count == 1 {
 				return AllSolutions.
 			}
@@ -75,11 +75,11 @@ namespace Backgammon
 		}
 
 		// helper, give a list of move possible for one die
-		private List<Move> MoveDie(byte die, Board.Side side){
+		private List<Move> MoveDie(int die, Board.Side side){
 			List<Move> solutions = new List<Move> ();
 			// TBC
-			List<byte> availables = this.PossibleTokens(side);
-			for (byte i=0 ; i < availables.Count ; i++){
+			List<int> availables = this.PossibleTokens(side);
+			for (int i=0 ; i < availables.Count ; i++){
 				if (this.Aim(availables[i], die, side) >= 0) {
 					solutions.Add(availables[i]);
 				}
@@ -93,8 +93,8 @@ namespace Backgammon
 		}
 		
 		// tell where that point would aim with this die, -1 for bear off
-		private int Aim(byte point, byte die, Board.Side side){
-			byte aimPoint;
+		private int Aim(int point, int die, Board.Side side){
+			int aimPoint;
 			if (side == Board.Side.light){
 				aimPoint = point + die;
 			}
@@ -106,9 +106,9 @@ namespace Backgammon
 		}
 		
 		// helper, all tokens that are availables on board, doesn't count captured
-		private List<byte> PossibleTokens(Board.Side side){
-			List<byte> solutions = new List<byte> ();
-			for (byte i=0; i<24 ; i++){
+		private List<int> PossibleTokens(Board.Side side){
+			List<int> solutions = new List<int> ();
+			for (int i=0; i<24 ; i++){
 				if (points[i].side == side) solutions.Add(i);
 			}
 			return solutions;
@@ -117,8 +117,8 @@ namespace Backgammon
 		// helper, are all tokens in your home board ?
 		private bool BearingOff(Board.Side side){
 			if (HasCaptured(side)) return false;
-			byte start;
-			byte finish;
+			int start;
+			int finish;
 			if (side == Board.Side.light){
 				start = 6;
 				finish = 24;
@@ -127,7 +127,7 @@ namespace Backgammon
 				start = 0;
 				finish = 18;
 			}
-			for(byte i=start; i<finish ; i++){
+			for(int i=start; i<finish ; i++){
 				if (slots[i].side == side){
 					return false;
 				}
@@ -149,7 +149,7 @@ namespace Backgammon
 				start = 18;
 				finish = 24 - die;
 			}
-			for(byte i=start; i<finish ; i++){
+			for(int i=start; i<finish ; i++){
 				if (slots[i].side != Board.Side.empty){
 					return false;
 				}
@@ -166,7 +166,7 @@ namespace Backgammon
 		
 		// helper, check if that side has a capture
 		private bool HasCaptured(Board.Side side){
-			return captured[(byte)side].Count() > 0;
+			return captured[(int)side].Count() > 0;
 		}
 
 	}
