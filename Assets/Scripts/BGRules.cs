@@ -11,6 +11,8 @@ namespace Backgammon
 	//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
 	//The same checker may be moved twice as long as the two moves are distinct
 
+	// I use BGPoint[0] for light capture, and BGPoint[25] for dark capture
+
 	public struct BGPoint
 	{
 		public byte qty;
@@ -71,14 +73,13 @@ namespace Backgammon
 			//		else Compute remaining dice + current path and matrix
 			//		
 		}
-		                                
 
-		// helper, give a list of source move possible for one die
-		private List<byte> MoveDie(byte die, Board.Side side){
+		// helper, give a list of move possible for one die
+		private List<Move> MoveDie(byte die, Board.Side side){
 			List<Move> solutions = new List<Move> ();
-			// TBD
-			List<int> availables = this.PossibleTokens(side);
-			for (int i=0 ; i < availables.Count ; i++){
+			// TBC
+			List<byte> availables = this.PossibleTokens(side);
+			for (byte i=0 ; i < availables.Count ; i++){
 				if (this.Aim(availables[i], die, side) >= 0) {
 					solutions.Add(availables[i]);
 				}
@@ -92,22 +93,22 @@ namespace Backgammon
 		}
 		
 		// tell where that point would aim with this die, -1 for bear off
-		private int Aim(int point, int die, Board.Side side){
-			int aimPoint;
+		private int Aim(byte point, byte die, Board.Side side){
+			byte aimPoint;
 			if (side == Board.Side.light){
 				aimPoint = point + die;
 			}
 			else {
 				aimPoint = point - die;
 			}
-			if (aimPoint < 0 || aimPoint > 23) return -1;
+			if (aimPoint < 1 || aimPoint > 24) return -1;
 			return aimPoint;
 		}
 		
 		// helper, all tokens that are availables on board, doesn't count captured
-		private List<int> PossibleTokens(Board.Side side){
-			List<int> solutions = new List<int> ();
-			for (int i=0; i<24 ; i++){
+		private List<byte> PossibleTokens(Board.Side side){
+			List<byte> solutions = new List<byte> ();
+			for (byte i=0; i<24 ; i++){
 				if (points[i].side == side) solutions.Add(i);
 			}
 			return solutions;
@@ -116,8 +117,8 @@ namespace Backgammon
 		// helper, are all tokens in your home board ?
 		private bool BearingOff(Board.Side side){
 			if (HasCaptured(side)) return false;
-			int start;
-			int finish;
+			byte start;
+			byte finish;
 			if (side == Board.Side.light){
 				start = 6;
 				finish = 24;
@@ -126,7 +127,7 @@ namespace Backgammon
 				start = 0;
 				finish = 18;
 			}
-			for(int i=start; i<finish ; i++){
+			for(byte i=start; i<finish ; i++){
 				if (slots[i].side == side){
 					return false;
 				}
@@ -148,7 +149,7 @@ namespace Backgammon
 				start = 18;
 				finish = 24 - die;
 			}
-			for(int i=start; i<finish ; i++){
+			for(byte i=start; i<finish ; i++){
 				if (slots[i].side != Board.Side.empty){
 					return false;
 				}
@@ -165,7 +166,7 @@ namespace Backgammon
 		
 		// helper, check if that side has a capture
 		private bool HasCaptured(Board.Side side){
-			return captured[(int)side].Count() > 0;
+			return captured[(byte)side].Count() > 0;
 		}
 
 	}
