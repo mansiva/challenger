@@ -16,7 +16,8 @@ namespace Backgammon
 		public enum Side
 		{
 			light,
-			dark
+			dark,
+			empty
 		}
 		//maybe useful later
 		public enum TokenState
@@ -28,11 +29,7 @@ namespace Backgammon
 
 		// stack zones : slots, homes and captures
 		private TokenStack[] slots = new TokenStack[24];
-		private TokenStack homeDark;
-		private TokenStack homeLight;
 		private TokenStack[] homes = new TokenStack[2];
-		private TokenStack capturedDark;
-		private TokenStack capturedLight;
 		private TokenStack[] captured = new TokenStack[2];
 
 		private Token[] tokens = new Token[30];
@@ -143,6 +140,7 @@ namespace Backgammon
 				}
 			}
 		}
+
 
 		public void TESTS(){
 			// TEST THINGS

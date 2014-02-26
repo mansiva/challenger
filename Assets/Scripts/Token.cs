@@ -9,8 +9,9 @@ namespace Backgammon
 		//public static Board board;
 		public Color tokenColorDark;
 		public Color tokenColorLight;
-		private Board.Side side;
+		public Board.Side side;
 		public Board.TokenState state;
+
 		// Use this for initialization
 		void Start ()
 		{
