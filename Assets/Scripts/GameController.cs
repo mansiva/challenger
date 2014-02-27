@@ -11,7 +11,11 @@ namespace Backgammon
 			started,
 		}
 
+		// the Engine knows the rule of BG :)
+		private BGEngine bgEngine;
+		// the Board can display a board
 		private Board board;
+
 		private States currentState;
 		// Use this for initialization
 		void Start ()
@@ -21,6 +25,9 @@ namespace Backgammon
 			GameObject boardObject = NGUITools.AddChild(gameObject, prefabBoard);
 			// Get script Board attached to prefab
 			board = boardObject.GetComponent<Board>();
+			bgEngine = new BGEngine();
+			bgEngine.setPosition(BGEngine.getStartPosition()); // this will put the engine in a start position of backgammon
+
 			currentState = States.loaded;
 
 		}

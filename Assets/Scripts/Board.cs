@@ -141,6 +141,9 @@ namespace Backgammon
 			}
 		}
 
+		public void playMove(Move m){
+
+		}
 
 		public void TESTS(){
 			// TEST THINGS
