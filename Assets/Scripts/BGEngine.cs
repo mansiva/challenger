@@ -49,14 +49,10 @@ namespace Backgammon
 
 		}
 
-		public void setPosition(BGPosition position){
-
-
-		}
-
 		public static BGPosition getStartPosition(){
 			if (startPosition == null){
 				BGEngine.startPosition = new BGPosition(
+					// TBD put the real solution here
 					new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 					new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0});
 			}
@@ -64,13 +60,14 @@ namespace Backgammon
 
 		}
 		// Copy slots and captures into points table
-		public void InitBoard(TokenStack[] slots, TokenStack[] captured){
-			for(int i=1; i<25 ; i++){
-				points[i].qty = (int)slots[i].Count();
-				points[i].side = slots[i].side;
-			}
-			points[0].qty = (int)captured[(int)Board.Side.light].Count();
-			points[25].qty = (int)captured[(int)Board.Side.dark].Count();
+		public void setPosition(BGPosition position){
+			// TBD
+//			for(int i=1; i<25 ; i++){
+//				points[i].qty = (int)slots[i].Count();
+//				points[i].side = slots[i].side;
+//			}
+//			points[0].qty = (int)captured[(int)Board.Side.light].Count();
+//			points[25].qty = (int)captured[(int)Board.Side.dark].Count();
 		}
 
 		// returns a list of solutions (= list of moves)
