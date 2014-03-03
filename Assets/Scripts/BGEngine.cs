@@ -37,16 +37,17 @@ namespace Backgammon
 
 	public class BGEngine
 	{
+		// Save the current Position under position.
 		private BGPoint[] position = new BGPoint[26];
+
+		// a static position holding the startPosition
 		private static BGPoint[] startPosition; 
-
-		//List<List <Move>> finalSolution; // this shouldn't be here, i'll have to see what's wrong
-
 		public BGEngine(){
 
 		}
 
 		public static BGPoint[] GetStartPosition(){
+			// create the start position, or simply returns it if already created
 			if (startPosition == null){
 				startPosition = new BGPoint[26];
 				int[] light = new int[] {0, 0,0,0,0,0,5, 0,3,0,0,0,0, 5,0,0,0,0,0, 0,0,0,0,0,2, 0};
@@ -65,6 +66,7 @@ namespace Backgammon
 
 		// Copy slots and captures into points table
 		public void SetPosition(BGPoint[] position){
+			this.position = position;
 		}
 
 		// returns a list of solutions (= list of moves)
