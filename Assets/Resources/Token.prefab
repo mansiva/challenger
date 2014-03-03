@@ -56,7 +56,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_Mesh: {fileID: 4300000, guid: 7ee5c1f3498c24f86b9f0c627f88fb00, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 6f62eba84c7c74469a2a87095ab7c9d0, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -70,6 +70,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tokenColorDark: {r: 0, g: 0, b: 0, a: 0}
   tokenColorLight: {r: .760784328, g: .964705884, b: .862745106, a: 0}
+  side: 0
   state: 0
 --- !u!1001 &100100000
 Prefab:

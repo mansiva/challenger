@@ -27,17 +27,16 @@ namespace Backgammon
 			home
 		}
 
-		// stack zones : slots, homes and captures
-		private TokenStack[] slots = new TokenStack[24];
+		// stack zones : slots, homes and bars are now slots[0] for dark and slots[25]
+		private TokenStack[] slots = new TokenStack[26];
 		private TokenStack[] homes = new TokenStack[2];
-		private TokenStack[] captured = new TokenStack[2];
 
-		private Token[] tokens = new Token[30];
-
+		//private Token[] tokens = new Token[30];
+		private GameObject prefabPeon;
 		// I don't know how to create tupples, so I create tables, 
 		// used for start position
-		public static readonly int[] initPos = new int[] { 23, 12, 7, 5};
-		public static readonly int[] initQty = new int[] { 2,  5,  3, 5};
+//		public static readonly int[] initPos = new int[] { 23, 12, 7, 5};
+//		public static readonly int[] initQty = new int[] { 2,  5,  3, 5};
 
 
 		// ---------------------------------------------------------------------------
@@ -49,23 +48,23 @@ namespace Backgammon
 			Vector3 orientation = new Vector3 (270,0,0);
 			Vector3 offset = new Vector3 (0, 0, this.slotWidth);
 			Vector3 slotPos = new Vector3();
-			for (int id = 0; id < 24; id++)
+			for (int id = 1; id < 25; id++)
 			{
 				// TokenStack(int id, Vector3 startposition, Vector3 orientation, Vector3 offset)
-				if (id < 6){
-					slotPos = new Vector3 (this.spineWidth/2.0f + (5.5f - id) * this.slotWidth, 0.1f, -this.slotHeight + this.slotWidth/2.0f);
+				if (id < 7){
+					slotPos = new Vector3 (this.spineWidth/2.0f + (6.5f - id) * this.slotWidth, 0.1f, -this.slotHeight + this.slotWidth/2.0f);
 					slots[id] = new TokenStack(slotPos, orientation,offset);
 				}
-				else if (id < 12) {
-					slotPos = new Vector3 (-this.spineWidth/2.0f + (5.5f - id) * this.slotWidth,  0.1f, -this.slotHeight + this.slotWidth/2.0f);
+				else if (id < 13) {
+					slotPos = new Vector3 (-this.spineWidth/2.0f + (6.5f - id) * this.slotWidth,  0.1f, -this.slotHeight + this.slotWidth/2.0f);
 					slots[id] = new TokenStack(slotPos, orientation,offset);
 				}
-				else if (id < 18){
-					slotPos = new Vector3 (-this.spineWidth/2.0f + (id - 17.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
+				else if (id < 19){
+					slotPos = new Vector3 (-this.spineWidth/2.0f + (id - 18.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
 					slots[id] = new TokenStack(slotPos, orientation,-offset);
 				}
-				else if (id < 24){
-					slotPos = new Vector3 (this.spineWidth/2.0f + (id - 17.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
+				else if (id < 25){
+					slotPos = new Vector3 (this.spineWidth/2.0f + (id - 18.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
 					slots[id] = new TokenStack(slotPos, orientation,-offset);
 				}
 			}
@@ -86,57 +85,30 @@ namespace Backgammon
 			orientation = new Vector3 (270,0,0);
 			offset = new Vector3 (0, 0, -this.slotWidth);
 			slotPos = new Vector3(0, 0.1f, -this.slotWidth/2.0f);
-			captured[(int)Board.Side.dark] = new TokenStack(slotPos, orientation,offset);
+			slots[0] = new TokenStack(slotPos, orientation,offset);
 
 			// and light
 			orientation = new Vector3 (270,0,0);
 			offset = new Vector3 (0, 0, this.slotWidth);
 			slotPos = new Vector3(0, 0.1f, this.slotWidth/2.0f);
-			captured[(int)Board.Side.light] = new TokenStack(slotPos, orientation,offset);
+			slots[25] = new TokenStack(slotPos, orientation,offset);
 
-			// Create the 30 Tokens
-			GameObject prefabPeon = Resources.Load<GameObject>("Token");
-
-			for (int i = 0; i < 30; i++)
-			{
-				tokens[i] = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
-				if (i < 15)
-					tokens[i].setSide(Side.light);
-				else
-					tokens[i].setSide(Side.dark);
-
-			}
-
-			//ResetTokens();
-			//TESTS ();
+			// ref to Token
+			prefabPeon = Resources.Load<GameObject>("Token");
 		}
 
-		// ---------------------------------------------------------------------------
-		// place all tokens in a startPosition
-		// ---------------------------------------------------------------------------
-		public void ResetTokens()
-		{
-			// light player vs dark player light 1 - 24, dark 24 - 1
-			// light : 24:2, 13:5, 8:3, 6:5
-			// light to dark : (-x + 25)
-			int k = 0;
-			for (int i = 0; i < initPos.Length; i++)
+		public void SetPosition(BGPoint[] position){
+			// right now I only do one light out of this !!
+			for (int i = 0; i < position.Length; i++)
 			{
-				for (int j = 0; j < initQty[i]; j++)
 				{
-					// light
-					slots[ initPos[i] ].AddToken(tokens[k]);
-					k++;
-				}
-			}
-
-			for (int i = 0; i < initPos.Length; i++)
-			{
-				for (int j = 0; j < initQty[i]; j++)
-				{
-					// dark
-					slots[ 23 - initPos[i] ].AddToken(tokens[k]);
-					k++;
+					if (position[i].qty > 0 ){
+						for (int j=0; j<position[i].qty; j++){
+							Token t = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
+							t.SetSide(position[i].side);
+							slots[i].AddToken(t);
+						}
+					}
 				}
 			}
 		}
@@ -147,8 +119,8 @@ namespace Backgammon
 
 		public void TESTS(){
 			// TEST THINGS
-			homes[(int)Board.Side.dark].AddToken (slots [0].RemoveToken ());
-			captured[(int)Board.Side.dark].AddToken (slots [0].RemoveToken ());
+			//homes[(int)Board.Side.dark].AddToken (slots [0].RemoveToken ());
+			//captured[(int)Board.Side.dark].AddToken (slots [0].RemoveToken ());
 		}
 	}
 }

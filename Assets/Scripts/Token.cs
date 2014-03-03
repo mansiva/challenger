@@ -20,7 +20,7 @@ namespace Backgammon
 			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
 		}
 
-		public void setSide(Board.Side side)
+		public void SetSide(Board.Side side)
 		{
 			this.side = side;
 			if (side == Board.Side.light)
@@ -29,7 +29,7 @@ namespace Backgammon
 				renderer.material.color = tokenColorDark;
 		}
 
-		public void setState(Board.TokenState tokenState)
+		public void SetState(Board.TokenState tokenState)
 		{
 			state = tokenState;
 		}

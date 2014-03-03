@@ -11,13 +11,9 @@ namespace Backgammon
 	//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
 	//The same checker may be moved twice as long as the two moves are distinct
 
-	// I use BGPoint[0] for light capture, and BGPoint[25] for dark capture
-
-	public struct BGPoint
-	{
-		public int qty;
-		public Board.Side side;
-	}
+// TBD : BGPosition out : simpler from [0 to 25] with 0 is bar for light?, 25 bar for dark?, the rest are BGPoint with qty and side.
+// light goes from 24 to 1, 25 should be bar for light, that will be more natural
+// and 0 is bar for dark
 
 	public struct Move
 	{
@@ -29,45 +25,46 @@ namespace Backgammon
 		public int dest;
 	}
 
-	public class BGPosition{
-		public int[] light; //25 ints start1 ends at the bar for light
-		public int[] dark; //25 ints start24 ends at the bar for dark
-		public BGPosition(int[] l, int[] d){
-			light = l;
-			dark = d;
+	public struct BGPoint
+	{
+		public BGPoint(int q, Board.Side s){
+			qty = q;
+			side = s;
 		}
+		public int qty;
+		public Board.Side side;
 	}
 
 	public class BGEngine
 	{
-		private BGPoint[] points = new BGPoint[26];
-		private static BGPosition startPosition; 
+		private BGPoint[] position = new BGPoint[26];
+		private static BGPoint[] startPosition; 
 
-		List<List <Move>> finalSolution; // this shouldn't be here, i'll have to see what's wrong
+		//List<List <Move>> finalSolution; // this shouldn't be here, i'll have to see what's wrong
 
 		public BGEngine(){
 
 		}
 
-		public static BGPosition getStartPosition(){
+		public static BGPoint[] GetStartPosition(){
 			if (startPosition == null){
-				BGEngine.startPosition = new BGPosition(
-					// TBD put the real solution here
-					new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-					new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0});
+				startPosition = new BGPoint[26];
+				int[] light = new int[] {0, 0,0,0,0,0,5, 0,3,0,0,0,0, 5,0,0,0,0,0, 0,0,0,0,0,2, 0};
+				int[] dark = new int[]  {0, 2,0,0,0,0,0, 0,0,0,0,0,5, 0,0,0,0,3,0, 5,0,0,0,0,0, 0};
+				for(int i=1 ; i<25 ; i++){
+					Board.Side s;
+					if (light[i] > 0) s = Board.Side.light;
+					else if (dark[i] > 0) s = Board.Side.dark;
+					else s = Board.Side.empty;
+					startPosition[i] = new BGPoint(light[i] + dark[i],s);
+				}
 			}
-			return startPosition;
 
+			return startPosition;
 		}
+
 		// Copy slots and captures into points table
-		public void setPosition(BGPosition position){
-			// TBD
-//			for(int i=1; i<25 ; i++){
-//				points[i].qty = (int)slots[i].Count();
-//				points[i].side = slots[i].side;
-//			}
-//			points[0].qty = (int)captured[(int)Board.Side.light].Count();
-//			points[25].qty = (int)captured[(int)Board.Side.dark].Count();
+		public void SetPosition(BGPoint[] position){
 		}
 
 		// returns a list of solutions (= list of moves)
@@ -85,12 +82,12 @@ namespace Backgammon
 				dice.Push(die1);
 				dice.Push(die2);
 			}
-			finalSolution = new List<List <Move>>();
-			this.Compute(dice, new List<Backgammon.Move>(), points, side);
+			List<List <Move>> finalSolution = new List<List <Move>>();
+			this.Compute(dice, new List<Backgammon.Move>(), finalSolution ,position, side);
 			return finalSolution;
 			}
 		
-		public  void Compute(Stack<int> dice, List<Move> currentSolution, BGPoint[] currentBoard, Board.Side side){
+		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGPoint[] currentBoard, Board.Side side){
 			//pop die and get possibleMoves
 			foreach(Move m in MoveDie(dice.Pop(),side))
 			{
@@ -100,8 +97,9 @@ namespace Backgammon
 					currentSolution.Add(m);
 					finalSolution.Add(new List<Move>(currentSolution));
 				}
-						//Compute dice currentSolution currentBoard
-				Compute(dice, currentSolution, currentBoard, side);
+				else{	//Compute dice currentSolution currentBoard
+					Compute(dice, currentSolution, finalSolution, currentBoard, side);
+				}
 					//printNode(child); //<-- recursive
 			}
 		}
@@ -109,8 +107,8 @@ namespace Backgammon
 		// play a move that has to be possible
 		// TBD take care of the capture
 		private void PlayMove(Move m){
-			points[m.source].qty -= 1;
-			points[m.dest].qty += 1;
+			position[m.source].qty -= 1;
+			position[m.dest].qty += 1;
 		}
 
 		// helper, give a list of move possible for one die
@@ -153,7 +151,7 @@ namespace Backgammon
 		private List<int> PossibleSourceTokens(Board.Side side){
 			List<int> solutions = new List<int> ();
 			for (int i=1; i<25 ; i++){
-				if (points[i].side == side) solutions.Add(i);
+				if (position[i].side == side) solutions.Add(i);
 			}
 			return solutions;
 		}
@@ -172,7 +170,7 @@ namespace Backgammon
 				finish = 18;
 			}
 			for(int i=start; i<finish ; i++){
-				if (points[i].side == side){
+				if (position[i].side == side){
 					return false;
 				}
 			}
@@ -194,7 +192,7 @@ namespace Backgammon
 				finish = 24 - die;
 			}
 			for(int i=start; i<finish ; i++){
-				if (points[i].side != Board.Side.empty){
+				if (position[i].side != Board.Side.empty){
 					return false;
 				}
 			}
@@ -203,14 +201,14 @@ namespace Backgammon
 		
 		// helper, is this point accessible ?
 		private bool PossiblePoint(int point, Board.Side side){
-			if (points[point].qty < 2) return true;
-			if (points[point].side == side) return true;
+			if (position[point].qty < 2) return true;
+			if (position[point].side == side) return true;
 			return false;
 		}
 		
 		// helper, check if that side has a capture
 		private bool HasCaptured(Board.Side side){
-			return side==Board.Side.light ? points[0].qty>0 : points[25].qty>0;
+			return side==Board.Side.light ? position[0].qty>0 : position[25].qty>0;
 		}
 
 	}
