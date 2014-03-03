@@ -37,9 +37,11 @@ namespace Backgammon
 				currentState = States.started;
 				board.SetPosition(BGEngine.GetStartPosition());
 				List<List <Move>> sols = bgEngine.AllSolutions(6,1,Board.Side.light);
-				for (int i=0; i<sols.Count ; i++){
+				for (int i=0; i<sols.Count ; i++)
+				{
 					List<Move> movs = sols[i];
-					for(int j=0; j<movs.Count; j++){
+					for(int j=0; j<movs.Count; j++)
+					{
 						Debug.Log(sols[i][j].source);
 						Debug.Log(sols[i][j].dest);
 					}

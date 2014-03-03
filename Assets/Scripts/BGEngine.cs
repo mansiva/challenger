@@ -100,6 +100,7 @@ namespace Backgammon
 					finalSolution.Add(new List<Move>(currentSolution));
 				}
 				else{	//Compute dice currentSolution currentBoard
+					currentSolution.Add(m);
 					Compute(dice, currentSolution, finalSolution, currentBoard, side);
 				}
 					//printNode(child); //<-- recursive
