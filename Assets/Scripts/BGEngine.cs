@@ -177,8 +177,9 @@ namespace Backgammon
 				}
 				else{	// Compute dice currentSolution currentBoard
 					Debug.Log(string.Format("Going deeper with {0}", dice));
-					currentSolution.Add(m);
-					Compute(new Stack<int>(dice), currentSolution, finalSolution, newBoard, side);
+					List<Move> solution = new List<Move>(currentSolution);
+					solution.Add(m);
+					Compute(new Stack<int>(dice), solution, finalSolution, newBoard, side);
 				}
 					//printNode(child); //<-- recursive
 			}
