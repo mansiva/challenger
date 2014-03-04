@@ -39,8 +39,16 @@ namespace Backgammon
 	public class BGPosition
 	{
 		private BGPoint[] position = new BGPoint[26];
+
+		public static int GetHomeIndex(Board.Side side){
+			return side == Board.Side.dark ? 0 : 25;
+		}
+
 		public BGPosition(){
 			position = new BGPoint[26];
+		}
+		public BGPosition(BGPosition pos){
+			Array.Copy(pos.position, position,26);
 		}
 		public BGPoint this[int index]   // long is a 64-bit integer
 		{
@@ -55,23 +63,63 @@ namespace Backgammon
 				position[index] = value;
 			}
 		}
+		public int Length {
+			get {
+				return position.Length;
+			}
+		}
+		public void IncrementQty(int i, int value){
+			position[i].qty += value;
+		}
+
+		public void SetSide(int i, Board.Side side){
+			position[i].side = side;
+		}
+
+		public void PrintPosition(){
+			string s = "";
+			for (int i=0; i<position.Length ; i++){
+				s+= " " + position[i].qty + " " + position[i].side;
+			}
+			Debug.Log(s);
+		}
+
+		public BGPosition ProjectMove( Move m, Board.Side side){
+			BGPosition board = new BGPosition(this);
+
+			Board.Side destSide = board[m.dest].side; // pratique
+			// Check capture
+			if (destSide == BGEngine.OppositeSide(side)){
+				board.IncrementQty(BGPosition.GetHomeIndex(destSide),1);
+				board.SetSide(m.dest, side);
+			}
+			else {
+				board.IncrementQty(m.dest, 1);
+				board.SetSide(m.dest, side);
+			}
+			// empty check and side
+			board.IncrementQty(m.source, -1);
+			if (board[m.source].qty == 0) board.SetSide(m.source, Board.Side.empty);
+			return board;
+		}
+
 	}
 	
 	public class BGEngine
 	{
 		// Save the current Position under position.
-		private BGPoint[] position = new BGPoint[26];
+		private BGPosition position = new BGPosition();
 
 		// a static position holding the startPosition
-		private static BGPoint[] startPosition; 
+		private static BGPosition startPosition; 
 		public BGEngine(){
 
 		}
 
-		public static BGPoint[] GetStartPosition(){
+		public static BGPosition GetStartPosition(){
 			// create the start position, or simply returns it if already created
 			if (startPosition == null){
-				startPosition = new BGPoint[26];
+				startPosition = new BGPosition();
 				int[] light = new int[] {0, 0,0,0,0,0,5, 0,3,0,0,0,0, 5,0,0,0,0,0, 0,0,0,0,0,2, 0};
 				int[] dark = new int[]  {0, 2,0,0,0,0,0, 0,0,0,0,0,5, 0,0,0,0,3,0, 5,0,0,0,0,0, 0};
 				for(int i=1 ; i<25 ; i++){
@@ -87,7 +135,7 @@ namespace Backgammon
 		}
 
 		// Copy slots and captures into points table
-		public void SetPosition(BGPoint[] position){
+		public void SetPosition(BGPosition position){
 			this.position = position;
 		}
 
@@ -111,12 +159,12 @@ namespace Backgammon
 			return finalSolution;
 			}
 		
-		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGPoint[] currentBoard, Board.Side side){
+		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGPosition currentBoard, Board.Side side){
 			//pop die and get possibleMoves
-			PrintPosition(currentBoard);
+			currentBoard.PrintPosition();
 			foreach(Move m in MoveDie(dice.Pop(),side))
 			{
-				BGPoint[] newBoard = ProjectMove(m, side);
+				BGPosition newBoard = currentBoard.ProjectMove(m, side);
 				Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
 				if (dice.Count == 0){
 				//addcurrentcolution To finalSolution
@@ -136,28 +184,7 @@ namespace Backgammon
 		}
 
 		// Play, assume validity of move, position[m.source].side should be the same as side
-		private BGPoint[] ProjectMove( Move m, Board.Side side){
-			BGPoint[] board = new BGPoint[26];
-			Array.Copy(position, board, 26);
-			Board.Side destSide = board[m.dest].side; // pratique
-			// Check capture
-			if (destSide == OppositeSide(side)){
-				board[GetHomeIndex(destSide)].qty += 1; //capture this checker
-				board[m.dest].side = side;
-			}
-			else {
-				board[m.dest].qty += 1;
-				board[m.dest].side = side;
-			}
-			// empty check and side
-			board[m.source].qty -= 1;
-			if (board[m.source].qty == 0) board[m.source].side = Board.Side.empty;
-			return board;
-		}
 
-		private int GetHomeIndex(Board.Side side){
-			return side == Board.Side.dark ? 0 : 25;
-		}
 
 		// helper, give a list of move possible for one die
 		private List<Move> MoveDie(int die, Board.Side side){
@@ -260,19 +287,12 @@ namespace Backgammon
 			return side==Board.Side.light ? position[0].qty>0 : position[25].qty>0;
 		}
 
-		private Board.Side OppositeSide(Board.Side side){
+		public static Board.Side OppositeSide(Board.Side side){
 			if (side == Board.Side.dark) return Board.Side.light;
 			if (side == Board.Side.light) return Board.Side.dark;
 			return Board.Side.empty;
 		}
 
-		public void PrintPosition(BGPoint[] pos){
-			string s = "";
-			for (int i=0; i<pos.Length ; i++){
-				s+= " " + pos[i].qty + " " + pos[i].side;
-			}
-			Debug.Log(s);
-		}
 
 		public string MoveInString(Move m){
 			return string.Format("{0}/{1}",m.source, m.dest);

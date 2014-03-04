@@ -97,7 +97,7 @@ namespace Backgammon
 			prefabPeon = Resources.Load<GameObject>("Token");
 		}
 
-		public void SetPosition(BGPoint[] position){
+		public void SetPosition(BGPosition position){
 			// right now I only do one light out of this !!
 			for (int i = 0; i < position.Length; i++)
 			{
