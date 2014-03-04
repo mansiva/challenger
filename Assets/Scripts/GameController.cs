@@ -42,8 +42,7 @@ namespace Backgammon
 					List<Move> movs = sols[i];
 					for(int j=0; j<movs.Count; j++)
 					{
-						Debug.Log(sols[i][j].source);
-						Debug.Log(sols[i][j].dest);
+						Debug.Log( string.Format("solution:{0} source:{1} dest:{2} {3}",i, sols[i][j].source,sols[i][j].dest,j));
 					}
 				}
 			}

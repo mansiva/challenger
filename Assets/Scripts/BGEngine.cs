@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 namespace Backgammon
 {
@@ -35,6 +36,27 @@ namespace Backgammon
 		public Board.Side side;
 	}
 
+	public class BGPosition
+	{
+		private BGPoint[] position = new BGPoint[26];
+		public BGPosition(){
+			position = new BGPoint[26];
+		}
+		public BGPoint this[int index]   // long is a 64-bit integer
+		{
+			// Read one byte at offset index and return it.
+			get 
+			{
+				return position[index];
+			}
+			// Write one byte at offset index and return it.
+			set 
+			{
+				position[index] = value;
+			}
+		}
+	}
+	
 	public class BGEngine
 	{
 		// Save the current Position under position.
@@ -91,27 +113,50 @@ namespace Backgammon
 		
 		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGPoint[] currentBoard, Board.Side side){
 			//pop die and get possibleMoves
+			PrintPosition(currentBoard);
 			foreach(Move m in MoveDie(dice.Pop(),side))
 			{
-				PlayMove(m);
-				if (dice.Count == 1){
+				BGPoint[] newBoard = ProjectMove(m, side);
+				Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
+				if (dice.Count == 0){
 				//addcurrentcolution To finalSolution
-					currentSolution.Add(m);
-					finalSolution.Add(new List<Move>(currentSolution));
+					List<Move> solution = new List<Move>(currentSolution);
+					solution.Add(m);
+					finalSolution.Add(solution); 
+					Debug.Log ("Adding Current Solution :" + ListMoveInString(solution));
+					// currentSolution = new List<Backgammon.Move>(); // new Current Solution
 				}
-				else{	//Compute dice currentSolution currentBoard
+				else{	// Compute dice currentSolution currentBoard
+					Debug.Log(string.Format("Going deeper with {0}", dice));
 					currentSolution.Add(m);
-					Compute(dice, currentSolution, finalSolution, currentBoard, side);
+					Compute(new Stack<int>(dice), currentSolution, finalSolution, newBoard, side);
 				}
 					//printNode(child); //<-- recursive
 			}
 		}
 
-		// play a move that has to be possible
-		// TBD take care of the capture
-		private void PlayMove(Move m){
-			position[m.source].qty -= 1;
-			position[m.dest].qty += 1;
+		// Play, assume validity of move, position[m.source].side should be the same as side
+		private BGPoint[] ProjectMove( Move m, Board.Side side){
+			BGPoint[] board = new BGPoint[26];
+			Array.Copy(position, board, 26);
+			Board.Side destSide = board[m.dest].side; // pratique
+			// Check capture
+			if (destSide == OppositeSide(side)){
+				board[GetHomeIndex(destSide)].qty += 1; //capture this checker
+				board[m.dest].side = side;
+			}
+			else {
+				board[m.dest].qty += 1;
+				board[m.dest].side = side;
+			}
+			// empty check and side
+			board[m.source].qty -= 1;
+			if (board[m.source].qty == 0) board[m.source].side = Board.Side.empty;
+			return board;
+		}
+
+		private int GetHomeIndex(Board.Side side){
+			return side == Board.Side.dark ? 0 : 25;
 		}
 
 		// helper, give a list of move possible for one die
@@ -134,6 +179,7 @@ namespace Backgammon
 					}
 				}
 			}
+			Debug.Log ("MoveDie -> "+ListMoveInString(solutions));
 			return solutions;
 		}
 		
@@ -214,5 +260,30 @@ namespace Backgammon
 			return side==Board.Side.light ? position[0].qty>0 : position[25].qty>0;
 		}
 
+		private Board.Side OppositeSide(Board.Side side){
+			if (side == Board.Side.dark) return Board.Side.light;
+			if (side == Board.Side.light) return Board.Side.dark;
+			return Board.Side.empty;
+		}
+
+		public void PrintPosition(BGPoint[] pos){
+			string s = "";
+			for (int i=0; i<pos.Length ; i++){
+				s+= " " + pos[i].qty + " " + pos[i].side;
+			}
+			Debug.Log(s);
+		}
+
+		public string MoveInString(Move m){
+			return string.Format("{0}/{1}",m.source, m.dest);
+		}
+
+		public string ListMoveInString (List<Move> moves){
+			string result = "";
+			for (int i=0 ; i<moves.Count ; i++){
+				result = result + " " + MoveInString(moves[i]);
+			}
+			return result;
+		}
 	}
 }
