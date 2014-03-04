@@ -84,6 +84,7 @@ namespace Backgammon
 			Debug.Log(s);
 		}
 
+		// Play a move returns the new position, assume validity of move, position[m.source].side should be the same as side
 		public BGPosition ProjectMove( Move m, Board.Side side){
 			BGPosition board = new BGPosition(this);
 
@@ -162,7 +163,7 @@ namespace Backgammon
 		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGPosition currentBoard, Board.Side side){
 			//pop die and get possibleMoves
 			currentBoard.PrintPosition();
-			foreach(Move m in MoveDie(dice.Pop(),side))
+			foreach(Move m in MoveDie(currentBoard, dice.Pop(),side))
 			{
 				BGPosition newBoard = currentBoard.ProjectMove(m, side);
 				Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
@@ -183,14 +184,13 @@ namespace Backgammon
 			}
 		}
 
-		// Play, assume validity of move, position[m.source].side should be the same as side
 
 
 		// helper, give a list of move possible for one die
-		private List<Move> MoveDie(int die, Board.Side side){
+		private List<Move> MoveDie(BGPosition currentPosition, int die, Board.Side side){
 			List<Move> solutions = new List<Move> ();
 			// TBC
-			List<int> availables = this.PossibleSourceTokens(side);
+			List<int> availables = this.PossibleSourceTokens(currentPosition, side);
 			for (int i=0 ; i < availables.Count ; i++){
 				int destinationPoint = this.Aim(availables[i], die, side);
 
@@ -224,10 +224,10 @@ namespace Backgammon
 		}
 		
 		// helper, all tokens that are availables on board, doesn't count captured
-		private List<int> PossibleSourceTokens(Board.Side side){
+		private List<int> PossibleSourceTokens(BGPosition currentPosition, Board.Side side){
 			List<int> solutions = new List<int> ();
 			for (int i=1; i<25 ; i++){
-				if (position[i].side == side) solutions.Add(i);
+				if (currentPosition[i].side == side) solutions.Add(i);
 			}
 			return solutions;
 		}
