@@ -98,7 +98,7 @@ namespace Backgammon
 		}
 
 		public void SetPosition(BGPosition position){
-			// right now I only do one light out of this !!
+			// not tested for captures, and no homes check
 			for (int i = 0; i < position.Length; i++)
 			{
 				{
@@ -113,8 +113,18 @@ namespace Backgammon
 			}
 		}
 
-		public void playMove(Move m){
+		public void PlayMove(Move m, Board.Side side){
+			// If Capture 
+			if (slots[m.dest].side == BGEngine.OppositeSide(side)){
+				slots[BGPosition.GetBarIndex(BGEngine.OppositeSide(side))].AddToken(slots[m.dest].RemoveToken());
+			}
+			slots[m.dest].AddToken(slots[m.source].RemoveToken());
+		}
 
+		public void PlaySolution(List<Move> solution, Board.Side side){
+			for (int i =0 ; i< solution.Count ; i++){
+				PlayMove(solution[i],side);
+			}
 		}
 
 		public void TESTS(){

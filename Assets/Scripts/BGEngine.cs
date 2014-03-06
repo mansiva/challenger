@@ -36,21 +36,24 @@ namespace Backgammon
 		public Board.Side side;
 	}
 
+	// A BG Position contains 26 BGPoints: qty and side.
 	public class BGPosition
 	{
 		private BGPoint[] position = new BGPoint[26];
 
-		public static int GetHomeIndex(Board.Side side){
+		public static int GetBarIndex(Board.Side side){
 			return side == Board.Side.dark ? 0 : 25;
 		}
 
 		public BGPosition(){
 			position = new BGPoint[26];
 		}
+
 		public BGPosition(BGPosition pos){
 			Array.Copy(pos.position, position,26);
 		}
-		public BGPoint this[int index]   // long is a 64-bit integer
+
+		public BGPoint this[int index]   //
 		{
 			// Read one byte at offset index and return it.
 			get 
@@ -90,8 +93,8 @@ namespace Backgammon
 
 			Board.Side destSide = board[m.dest].side; // pratique
 			// Check capture
-			if (destSide == BGEngine.OppositeSide(side)){
-				board.IncrementQty(BGPosition.GetHomeIndex(destSide),1);
+			if (destSide == BGEngine.OppositeSide(side)){ // if the dest side isn't source side, it has to be a capture
+				board.IncrementQty(BGPosition.GetBarIndex(destSide),1);
 				board.SetSide(m.dest, side);
 			}
 			else {
@@ -102,6 +105,16 @@ namespace Backgammon
 			board.IncrementQty(m.source, -1);
 			if (board[m.source].qty == 0) board.SetSide(m.source, Board.Side.empty);
 			return board;
+		}
+
+		public BGPosition ProjectSolution( List<Move> solution, Board.Side side){
+			BGPosition position = new BGPosition(this);
+			Debug.Log(BGEngine.ListMoveInString(solution));
+
+			for (int i=0 ; i<solution.Count ; i++){
+				position = position.ProjectMove(solution[i], side);
+			}
+			return position;
 		}
 
 	}
@@ -141,7 +154,7 @@ namespace Backgammon
 		}
 
 		// returns a list of solutions (= list of moves)
-		public List<List <Move>> AllSolutions(int die1, int die2, Board.Side side){
+		public List<List <Move>> AllSolutions(int die1, int die2, BGPosition position, Board.Side side){
 			//List<List <Move>> result = new List<List <Move>> ();
 			// doubles or singles
 			Stack<int> dice = new Stack<int> ();
@@ -162,30 +175,26 @@ namespace Backgammon
 		
 		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGPosition currentBoard, Board.Side side){
 			//pop die and get possibleMoves
-			currentBoard.PrintPosition();
+			//currentBoard.PrintPosition();
 			foreach(Move m in MoveDie(currentBoard, dice.Pop(),side))
 			{
 				BGPosition newBoard = currentBoard.ProjectMove(m, side);
-				Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
+				//Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
+				List<Move> solution = new List<Move>(currentSolution);
+				solution.Add(m);
 				if (dice.Count == 0){
 				//addcurrentcolution To finalSolution
-					List<Move> solution = new List<Move>(currentSolution);
-					solution.Add(m);
 					finalSolution.Add(solution); 
-					Debug.Log ("Adding Current Solution :" + ListMoveInString(solution));
+//					Debug.Log ("Adding Current Solution :" + ListMoveInString(solution));
 					// currentSolution = new List<Backgammon.Move>(); // new Current Solution
 				}
 				else{	// Compute dice currentSolution currentBoard
-					Debug.Log(string.Format("Going deeper with {0}", dice));
-					List<Move> solution = new List<Move>(currentSolution);
-					solution.Add(m);
+					//Debug.Log(string.Format("Going deeper with {0}", dice));
 					Compute(new Stack<int>(dice), solution, finalSolution, newBoard, side);
 				}
 					//printNode(child); //<-- recursive
 			}
 		}
-
-
 
 		// helper, give a list of move possible for one die
 		private List<Move> MoveDie(BGPosition currentPosition, int die, Board.Side side){
@@ -207,7 +216,7 @@ namespace Backgammon
 					}
 				}
 			}
-			Debug.Log ("MoveDie -> "+ListMoveInString(solutions));
+//			Debug.Log ("MoveDie -> "+ListMoveInString(solutions));
 			return solutions;
 		}
 		
@@ -295,11 +304,11 @@ namespace Backgammon
 		}
 
 
-		public string MoveInString(Move m){
+		public static string MoveInString(Move m){
 			return string.Format("{0}/{1}",m.source, m.dest);
 		}
 
-		public string ListMoveInString (List<Move> moves){
+		public static string ListMoveInString (List<Move> moves){
 			string result = "";
 			for (int i=0 ; i<moves.Count ; i++){
 				result = result + " " + MoveInString(moves[i]);
