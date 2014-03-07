@@ -66,13 +66,13 @@ namespace Backgammon
 			orientation = new Vector3 (0,0,0);
 			offset = new Vector3 (0, 0, this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, -this.slotHeight);
-			homes[(int)Board.Side.dark] = new TokenStack(slotPos, orientation,offset);
+			homes[1] = new TokenStack(slotPos, orientation,offset);
 
 			// and light
 			orientation = new Vector3 (180,0,0);
 			offset = new Vector3 (0, 0, -this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, this.slotHeight);
-			homes[(int)Board.Side.light] = new TokenStack(slotPos, orientation,offset);
+			homes[0] = new TokenStack(slotPos, orientation,offset);
 
 			// Create Capture Zones for dark
 			orientation = new Vector3 (270,0,0);
@@ -95,10 +95,10 @@ namespace Backgammon
 			for (int i = 0; i < snapshot.Length; i++)
 			{
 				{
-					if (snapshot[i].qty > 0 ){
-						for (int j=0; j<snapshot[i].qty; j++){
+					if (snapshot[i] > 0 ){
+						for (int j=0; j<snapshot[i]; j++){
 							Token t = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
-							t.SetSide(snapshot[i].side);
+							//t.SetSide(snapshot[i].side);
 							slots[i].AddToken(t);
 						}
 					}
@@ -106,18 +106,18 @@ namespace Backgammon
 			}
 		}
 
-		public void PlayMove(Move m, Board.Side side){
+		public void PlayMove(Move m){
 			// If Capture 
-			if (slots[m.dest].side == BGEngine.OppositeSide(side)){
-				slots[BGSnapshot.GetBarIndex(BGEngine.OppositeSide(side))].AddToken(slots[m.dest].RemoveToken());
-			}
-			slots[m.dest].AddToken(slots[m.source].RemoveToken());
+//			if (slots[m.dest].side == BGEngine.OppositeSide(side)){
+//				slots[BGSnapshot.GetBarIndex(BGEngine.OppositeSide(side))].AddToken(slots[m.dest].RemoveToken());
+//			}
+//			slots[m.dest].AddToken(slots[m.source].RemoveToken());
 		}
 
-		public void PlaySolution(List<Move> solution, Board.Side side){
-			for (int i =0 ; i< solution.Count ; i++){
-				PlayMove(solution[i],side);
-			}
+		public void PlaySolution(List<Move> solution){
+//			for (int i =0 ; i< solution.Count ; i++){
+//				PlayMove(solution[i],side);
+//			}
 		}
 
 		public void TESTS(){

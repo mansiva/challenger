@@ -10,6 +10,31 @@ namespace Backgammon
 	//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
 	//The same checker may be moved twice as long as the two moves are distinct
 
+	// a move is a simple 2dvector / point structure.
+	public class Move
+	{
+		public int source;
+		public int dest;
+		
+		public Move(int s, int d){
+			source = s;
+			dest = d;
+		}
+		public string toString(){
+			return string.Format("{0}/{1}",source, dest);
+		}
+		
+		public static string ListMoveToString (List<Move> moves){
+			string result = "";
+			for (int i=0 ; i<moves.Count ; i++){
+				result = result + " " + moves[i].toString();
+			}
+			return result;
+		}
+	}
+	
+
+
 	// A BG Snapshot contains a bg position always from the player's turn point of view. 
 	public class BGSnapshot
 	{
@@ -23,6 +48,9 @@ namespace Backgammon
 		// creates a BGSnapshot
 		public BGSnapshot(int[] v){
 			this.snapshot = v;
+		}
+		public BGSnapshot(BGSnapshot s){
+			Array.Copy(s.snapshot,this.snapshot,26);
 		}
 
 		// return the start Position
@@ -102,7 +130,7 @@ namespace Backgammon
 		// returns a Snapshot if list of moves are played
 		public BGSnapshot ProjectSolution( List<Move> solution){
 			BGSnapshot snapshot = new BGSnapshot(this);
-			Debug.Log(BGEngine.ListMoveInString(solution));
+			Debug.Log(Move.ListMoveToString(solution));
 
 			for (int i=0 ; i<solution.Count ; i++){
 				snapshot = snapshot.ProjectMove(solution[i]);
@@ -112,12 +140,12 @@ namespace Backgammon
 
 		private List<int> PossibleSources(){
 			List<int> solutions = new List<int> ();
-			if (currentSnapshot[25] > 0){ // player is forced to get bar in
+			if (this.snapshot[25] > 0){ // player is forced to get bar in
 				solutions.Add(25);
 			}
 			else {
 				for (int i=1; i<25 ; i++){
-					if (currentSnapshot[i] > 0) solutions.Add(i);
+					if (this.snapshot[i] > 0) solutions.Add(i);
 				}
 			}
 			return solutions;
@@ -131,7 +159,7 @@ namespace Backgammon
 			for (int i=0 ; i < sources.Count ; i++){
 				int destinationPoint = sources[i] - die; // update here bear off
 				
-				if ( destinationPoint >= 1 && snapshot[point] >= -1) { // is the destination point in the board ?
+				if ( destinationPoint >= 1 && snapshot[destinationPoint] >= -1) { // is the destination point in the board ?
 					solutions.Add(new Move(sources[i],destinationPoint));
 				}
 				else { // BearOff possible ?
@@ -159,8 +187,8 @@ namespace Backgammon
 			}
 			else {
 				Stack<int> diceStraight = new Stack<int>();
-				dice.Push(die1);
-				dice.Push(die2);
+				diceStraight.Push(die1);
+				diceStraight.Push(die2);
 				diceConfig.Add(diceStraight);
 				Stack<int> dice = new Stack<int>();
 				dice.Push(die2); // reversed
@@ -169,8 +197,8 @@ namespace Backgammon
 			}
 
 			List<List <Move>> finalSolution = new List<List <Move>>();
-			foreach(Stack<int> dice in diceConfig){
-				this.Compute(dice, new List<Backgammon.Move>(), finalSolution ,snapshot);
+			foreach(Stack<int> d in diceConfig){
+				this.Compute(d, new List<Move>(), finalSolution ,this);
 			}
 			// should also compute reversed dice when not double.
 			return finalSolution;
@@ -188,7 +216,7 @@ namespace Backgammon
 		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGSnapshot currentBoard){
 			//pop die and get possibleMoves
 			//currentBoard.PrintSnapshot();
-			foreach(Move m in MoveDie(currentBoard, dice.Pop()))
+			foreach(Move m in currentBoard.MoveDie(dice.Pop()))
 			{
 				BGSnapshot newBoard = currentBoard.ProjectMove(m);
 				//Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));

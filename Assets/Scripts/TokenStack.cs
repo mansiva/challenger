@@ -11,7 +11,6 @@ namespace Backgammon
 		public Vector3 orientation;
 		public Vector3 offset;
 		public Stack<Token> tokens;
-		public Board.Side side;
 			
 		public TokenStack(Vector3 snapshot, Vector3 orientation, Vector3 offset)
 		{
@@ -24,7 +23,7 @@ namespace Backgammon
 		public  void AddToken(Token token)
 		{
 			//token.setState(Board.TokenState.onBoard);
-			this.side = token.side;
+//			this.side = token.side;
 			// snapshot the token using the snapshot, offset, and tokens.Count
 			token.transform.localPosition = this.startPosition + this.tokens.Count * this.offset;
 			token.transform.localEulerAngles = this.orientation;
@@ -34,7 +33,7 @@ namespace Backgammon
 		public Token RemoveToken()
 		{
 			// remove the last element of the Slot
-			if (tokens.Count == 1) side=Board.Side.empty;
+//			if (tokens.Count == 1) side=Board.Side.empty;
 			return tokens.Pop();
 		}
 		public int Count() {

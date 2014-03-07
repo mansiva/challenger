@@ -9,8 +9,7 @@ namespace Backgammon
 		//public static Board board;
 		public Color tokenColorDark;
 		public Color tokenColorLight;
-		public Board.Side side;
-		public Board.TokenState state;
+	//	public Board.TokenState state;
 
 		// Use this for initialization
 		void Start ()
@@ -20,19 +19,19 @@ namespace Backgammon
 			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
 		}
 
-		public void SetSide(Board.Side side)
+		public void SetSide()
 		{
-			this.side = side;
-			if (side == Board.Side.light)
-				renderer.material.color = tokenColorLight;
-			else
-				renderer.material.color = tokenColorDark;
+//			this.side = side;
+//			if (side == Board.Side.light)
+//				renderer.material.color = tokenColorLight;
+//			else
+//				renderer.material.color = tokenColorDark;
 		}
 
-		public void SetState(Board.TokenState tokenState)
-		{
-			state = tokenState;
-		}
+//		public void SetState(Board.TokenState tokenState)
+//		{
+//			state = tokenState;
+//		}
 
 		// Update is called once per frame
 		void Update () {
