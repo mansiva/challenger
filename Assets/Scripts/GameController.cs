@@ -4,6 +4,31 @@ using System.Collections.Generic;
 
 namespace Backgammon
 {
+	
+	// a move is a simple 2dvector / point structure.
+	public struct Move
+	{
+		public Move(int s, int d){
+			source = s;
+			dest = d;
+		}
+		public int  source;
+		public int dest;
+	}
+	
+	
+	public string MoveInString(Move m){
+		return string.Format("{0}/{1}",m.source, m.dest);
+	}
+	
+	public string ListMoveInString (List<Move> moves){
+		string result = "";
+		for (int i=0 ; i<moves.Count ; i++){
+			result = result + " " + MoveInString(moves[i]);
+		}
+		return result;
+	}
+
 	public class GameController : MonoBehaviour
 	{
 		public enum States
@@ -18,8 +43,10 @@ namespace Backgammon
 		private BGEngine bgEngine;
 		// the Board can display a board
 		private Board board;
-		private BGPosition position;
+		private BGSnapshot snapshot;
 		private Board.Side side;
+
+		private float _startTime;
 
 		private States currentState;
 		// Use this for initialization
@@ -31,44 +58,46 @@ namespace Backgammon
 			// Get script Board attached to prefab
 			board = boardObject.GetComponent<Board>();
 			bgEngine = new BGEngine();
-			position = BGEngine.GetStartPosition(); // this will put the engine in a start position of backgammon
+			snapshot = BGEngine.GetStartSnapshot(); // this will put the engine in a start snapshot of backgammon
 			currentState = States.loaded;
 		}
 		
 		// Update is called once per frame
-		void Update () {
-			if (currentState == States.loaded)
+		void Update ()
+		{
+			switch (currentState)
 			{
+			case States.loaded:
 				currentState = States.started;
-				board.SetPosition(position);
-			}
+				board.SetSnapshot(snapshot);
+				break;
 
-			else if (currentState == States.started)
-			{
+			case States.started:
 				// choose a side
 				currentState = States.throwDice;
 				side = Board.Side.dark;
-			}
-			else if (currentState == States.throwDice)
-			{
+				break;
+
+			case States.throwDice:
+				_startTime = Time.time;
 				currentState = States.waitingForPlayersMove;
 				side = BGEngine.OppositeSide(side);
-				Debug.Log("Side is now " + side);
-				StartCoroutine(RandomPlayer(Random.Range(1, 7), Random.Range(1, 7), position, Board.Side.light));
-//				for (int i=0; i<sols.Count ; i++)
-//				{
-//					Debug.Log(BGEngine.ListMoveInString(sols[i]));
-//				}
+
+				int d1 = Random.Range(1,6);
+				int d2 = Random.Range(1,6);
+				Debug.Log("Dice1: "+ d1 + ", Dice2: "+ d2);
+				List<List <Move>> sols = bgEngine.AllSolutions(d1, d2, snapshot, side);
+				List<Move> sol = sols[Random.Range(0, sols.Count)];
+				snapshot = snapshot.ProjectSolution( sol ,side );
+				board.PlaySolution(sol, side);
+				break;
+
+			case States.waitingForPlayersMove:
+				if (Time.time - _startTime > 2f)
+					currentState = States.throwDice;
+				break;
 			}
 		}
 
-		IEnumerator RandomPlayer(int d1, int d2, BGPosition position, Board.Side side){
-			List<List <Move>> sols = bgEngine.AllSolutions(d1,d2,position, side);
-			List<Move> sol = sols[Random.Range(0, sols.Count)];
-			position = position.ProjectSolution( sol ,side );
-			board.PlaySolution(sol, side);
-			currentState = States.throwDice;
-			yield return new WaitForSeconds(2);
-		}
 	}
 }

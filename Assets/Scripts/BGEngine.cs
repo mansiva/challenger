@@ -4,157 +4,148 @@ using System;
 
 namespace Backgammon
 {
-	// this is used to compute possible moves without interfering with the View
-
 	//A player may not move any other checkers until all checkers on the bar belonging to that player have re-entered the board
 	//If moves can be made according to either one die or the other, but not both, the higher number must be used.
 	//If one die is unable to be moved, but such a move is made possible by the moving of the other die, that move is compulsory.
 	//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
 	//The same checker may be moved twice as long as the two moves are distinct
 
-// TBD : BGPosition out : simpler from [0 to 25] with 0 is bar for light?, 25 bar for dark?, the rest are BGPoint with qty and side.
-// light goes from 24 to 1, 25 should be bar for light, that will be more natural
-// and 0 is bar for dark
-
-	public struct Move
+	// A BG Snapshot contains a bg position always from the player's point of view. 
+	public class BGSnapshot
 	{
-		public Move(int s, int d){
-			source = s;
-			dest = d;
-		}
-		public int  source;
-		public int dest;
-	}
+		// + means player, - means opponent, 0 means empty
+		// 0 is bar for opponent, 25 is bar for player. player is trying to bring everything to 0.
+		private int[] snapshot = new int[26];
 
-	public struct BGPoint
-	{
-		public BGPoint(int q, Board.Side s){
-			qty = q;
-			side = s;
-		}
-		public int qty;
-		public Board.Side side;
-	}
+		// private start position, use the static method to get it.
+		private static BGSnapshot startSnapshot; 
 
-	// A BG Position contains 26 BGPoints: qty and side.
-	public class BGPosition
-	{
-		private BGPoint[] position = new BGPoint[26];
-
-		public static int GetBarIndex(Board.Side side){
-			return side == Board.Side.dark ? 0 : 25;
+		// creates a BGSnapshot
+		public BGSnapshot(int[] v){
+			this.snapshot = v;
 		}
 
-		public BGPosition(){
-			position = new BGPoint[26];
+		// return the start Position
+		public static BGSnapshot GetStartSnapshot(){
+			// create the start snapshot, or simply returns it if already created
+			if (startSnapshot == null){
+				startSnapshot = new BGSnapshot(new int[] {0, -2,0,0,0,0,5, 0,3,0,0,0,-5, 5,0,0,0,-3,0, -5,0,0,0,0,2, 0});
+			}
+			
+			return startSnapshot;
 		}
 
-		public BGPosition(BGPosition pos){
-			Array.Copy(pos.position, position,26);
-		}
-
-		public BGPoint this[int index]   //
+		public int this[int index]   //
 		{
 			// Read one byte at offset index and return it.
 			get 
 			{
-				return position[index];
+				return snapshot[index];
 			}
 			// Write one byte at offset index and return it.
 			set 
 			{
-				position[index] = value;
+				snapshot[index] = value;
 			}
 		}
 		public int Length {
 			get {
-				return position.Length;
+				return snapshot.Length;
 			}
 		}
-		public void IncrementQty(int i, int value){
-			position[i].qty += value;
-		}
 
-		public void SetSide(int i, Board.Side side){
-			position[i].side = side;
-		}
-
-		public void PrintPosition(){
+		public string toString(){
 			string s = "";
-			for (int i=0; i<position.Length ; i++){
-				s+= " " + position[i].qty + " " + position[i].side;
+			for (int i=0; i<snapshot.Length ; i++){
+				s+= " " + snapshot[i];
 			}
-			Debug.Log(s);
+			return s;
 		}
 
-		// Play a move returns the new position, assume validity of move, position[m.source].side should be the same as side
-		public BGPosition ProjectMove( Move m, Board.Side side){
-			BGPosition board = new BGPosition(this);
+		// can the player bear off ?
+		public bool BearingOff(){
+			for(int i=7; i<26 ; i++){
+				if (snapshot[i] > 0){ // not if there is token not in the home board
+					return false;
+				}
+			}
+			return true;
+		}
 
-			Board.Side destSide = board[m.dest].side; // pratique
+		//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
+		private bool BearingOffRule(int point, int die){
+			if (!BearingOff()) return false;
+			if (die == 6) return true;
+			for(int i=die; i<7 ; i++){
+				if (snapshot[i] > 1){
+					return false;
+				}
+			}
+			return true;
+		}
+
+		// Play a move returns the new snapshot, assume validity of move
+		public BGSnapshot ProjectMove( Move m){
+			BGSnapshot board = new BGSnapshot(this);
 			// Check capture
-			if (destSide == BGEngine.OppositeSide(side)){ // if the dest side isn't source side, it has to be a capture
-				board.IncrementQty(BGPosition.GetBarIndex(destSide),1);
-				board.SetSide(m.dest, side);
+			if (board[m.dest] < 0){ // < 0 means -1
+				board[25] -= 1; // put an opponent in 25
 			}
 			else {
-				board.IncrementQty(m.dest, 1);
-				board.SetSide(m.dest, side);
+				board[m.dest] += 1;
 			}
 			// empty check and side
-			board.IncrementQty(m.source, -1);
-			if (board[m.source].qty == 0) board.SetSide(m.source, Board.Side.empty);
+			board[m.source] -= 1;
 			return board;
 		}
 
-		public BGPosition ProjectSolution( List<Move> solution, Board.Side side){
-			BGPosition position = new BGPosition(this);
+		// Play a list of moves
+		public BGSnapshot ProjectSolution( List<Move> solution){
+			BGSnapshot snapshot = new BGSnapshot(this);
 			Debug.Log(BGEngine.ListMoveInString(solution));
 
 			for (int i=0 ; i<solution.Count ; i++){
-				position = position.ProjectMove(solution[i], side);
+				snapshot = snapshot.ProjectMove(solution[i]);
 			}
-			return position;
+			return snapshot;
 		}
 
-	}
-	
-	public class BGEngine
-	{
-		// Save the current Position under position.
-		private BGPosition position = new BGPosition();
-
-		// a static position holding the startPosition
-		private static BGPosition startPosition; 
-		public BGEngine(){
-
-		}
-
-		public static BGPosition GetStartPosition(){
-			// create the start position, or simply returns it if already created
-			if (startPosition == null){
-				startPosition = new BGPosition();
-				int[] light = new int[] {0, 0,0,0,0,0,5, 0,3,0,0,0,0, 5,0,0,0,0,0, 0,0,0,0,0,2, 0};
-				int[] dark = new int[]  {0, 2,0,0,0,0,0, 0,0,0,0,0,5, 0,0,0,0,3,0, 5,0,0,0,0,0, 0};
-				for(int i=1 ; i<25 ; i++){
-					Board.Side s;
-					if (light[i] > 0) s = Board.Side.light;
-					else if (dark[i] > 0) s = Board.Side.dark;
-					else s = Board.Side.empty;
-					startPosition[i] = new BGPoint(light[i] + dark[i],s);
+		private List<int> PossibleSources(){
+			List<int> solutions = new List<int> ();
+			if (currentSnapshot[25] > 0){
+				solutions.Add(25);
+			}
+			else {
+				for (int i=1; i<25 ; i++){
+					if (currentSnapshot[i] > 0) solutions.Add(i);
 				}
 			}
-
-			return startPosition;
+			return solutions;
 		}
 
-		// Copy slots and captures into points table
-		public void SetPosition(BGPosition position){
-			this.position = position;
+		// helper, give a list of move possible for one die
+		private List<Move> MoveDie(int die){
+			List<Move> solutions = new List<Move> ();
+			// TBC
+			List<int> availables = this.PossibleSources();
+			for (int i=0 ; i < availables.Count ; i++){
+				int destinationPoint = availables[i] - die; // update here bear off
+				
+				if ( destinationPoint >= 1 && snapshot[point] >= -1) { // is the destination point in the board ?
+					solutions.Add(new Move(availables[i],destinationPoint));
+				}
+				else { // BearOff possible ?
+					if(BearingOffRule(availables[i], die)){
+						solutions.Add(new Move(availables[i], -1));
+					}
+				}
+			}
+			//			Debug.Log ("MoveDie -> "+ListMoveInString(solutions));
+			return solutions;
 		}
 
 		// returns a list of solutions (= list of moves)
-		public List<List <Move>> AllSolutions(int die1, int die2, BGPosition position, Board.Side side){
+		public List<List <Move>> AllSolutions(int die1, int die2, BGSnapshot snapshot, Board.Side side){
 			//List<List <Move>> result = new List<List <Move>> ();
 			// doubles or singles
 			Stack<int> dice = new Stack<int> ();
@@ -168,17 +159,22 @@ namespace Backgammon
 				dice.Push(die1);
 				dice.Push(die2);
 			}
+			// Compute consider all positions as white board ... fuck you Ivan
+			if (side = Board.Side.dark){
+				// reverse snapshot
+
+			}
 			List<List <Move>> finalSolution = new List<List <Move>>();
-			this.Compute(dice, new List<Backgammon.Move>(), finalSolution ,position, side);
+			this.Compute(dice, new List<Backgammon.Move>(), finalSolution ,snapshot);
 			return finalSolution;
 			}
 		
-		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGPosition currentBoard, Board.Side side){
+		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGSnapshot currentBoard){
 			//pop die and get possibleMoves
-			//currentBoard.PrintPosition();
+			//currentBoard.PrintSnapshot();
 			foreach(Move m in MoveDie(currentBoard, dice.Pop(),side))
 			{
-				BGPosition newBoard = currentBoard.ProjectMove(m, side);
+				BGSnapshot newBoard = currentBoard.ProjectMove(m, side);
 				//Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
 				List<Move> solution = new List<Move>(currentSolution);
 				solution.Add(m);
@@ -190,130 +186,10 @@ namespace Backgammon
 				}
 				else{	// Compute dice currentSolution currentBoard
 					//Debug.Log(string.Format("Going deeper with {0}", dice));
-					Compute(new Stack<int>(dice), solution, finalSolution, newBoard, side);
+					Compute(new Stack<int>(dice), solution, finalSolution, newBoard);
 				}
 					//printNode(child); //<-- recursive
 			}
-		}
-
-		// helper, give a list of move possible for one die
-		private List<Move> MoveDie(BGPosition currentPosition, int die, Board.Side side){
-			List<Move> solutions = new List<Move> ();
-			// TBC
-			List<int> availables = this.PossibleSourceTokens(currentPosition, side);
-			for (int i=0 ; i < availables.Count ; i++){
-				int destinationPoint = this.Aim(availables[i], die, side);
-
-				if ( destinationPoint >= 1) { // is the destination point in the board ?
-					// make sure the spot is possible ?
-					if (PossiblePoint(destinationPoint,side)){
-						solutions.Add(new Move(availables[i],destinationPoint));
-					}
-				}
-				else { // BearOff possible ?
-					if(BearingOffRule(availables[i], die, side)){
-						solutions.Add(new Move(availables[i], -1));
-					}
-				}
-			}
-//			Debug.Log ("MoveDie -> "+ListMoveInString(solutions));
-			return solutions;
-		}
-		
-		// tell where that point would aim with this die, -1 for bear off
-		private int Aim(int point, int die, Board.Side side){
-			int aimPoint;
-			if (side == Board.Side.light){
-				aimPoint = point + die;
-			}
-			else {
-				aimPoint = point - die;
-			}
-			if (aimPoint < 1 || aimPoint > 24) return -1;
-			return aimPoint;
-		}
-		
-		// helper, all tokens that are availables on board, doesn't count captured
-		private List<int> PossibleSourceTokens(BGPosition currentPosition, Board.Side side){
-			List<int> solutions = new List<int> ();
-			for (int i=1; i<25 ; i++){
-				if (currentPosition[i].side == side) solutions.Add(i);
-			}
-			return solutions;
-		}
-		
-		// helper, are all tokens in your home board ?
-		private bool BearingOff(Board.Side side){
-			if (HasCaptured(side)) return false;
-			int start;
-			int finish;
-			if (side == Board.Side.light){
-				start = 6;
-				finish = 24;
-			}
-			else{
-				start = 0;
-				finish = 18;
-			}
-			for(int i=start; i<finish ; i++){
-				if (position[i].side == side){
-					return false;
-				}
-			}
-			return true;
-		}
-		
-		// tells if you can use that die on that token to Bear off
-		private bool BearingOffRule(int point, int die, Board.Side side){
-			if (!BearingOff(side)) return false;
-			if (die == 6) return true;
-			int start;
-			int finish;
-			if (side == Board.Side.light){
-				start = die;
-				finish = 6;
-			}
-			else{
-				start = 18;
-				finish = 24 - die;
-			}
-			for(int i=start; i<finish ; i++){
-				if (position[i].side != Board.Side.empty){
-					return false;
-				}
-			}
-			return true;
-		}
-		
-		// helper, is this point accessible ?
-		private bool PossiblePoint(int point, Board.Side side){
-			if (position[point].qty < 2) return true;
-			if (position[point].side == side) return true;
-			return false;
-		}
-		
-		// helper, check if that side has a capture
-		private bool HasCaptured(Board.Side side){
-			return side==Board.Side.light ? position[0].qty>0 : position[25].qty>0;
-		}
-
-		public static Board.Side OppositeSide(Board.Side side){
-			if (side == Board.Side.dark) return Board.Side.light;
-			if (side == Board.Side.light) return Board.Side.dark;
-			return Board.Side.empty;
-		}
-
-
-		public static string MoveInString(Move m){
-			return string.Format("{0}/{1}",m.source, m.dest);
-		}
-
-		public static string ListMoveInString (List<Move> moves){
-			string result = "";
-			for (int i=0 ; i<moves.Count ; i++){
-				result = result + " " + MoveInString(moves[i]);
-			}
-			return result;
 		}
 	}
 }

@@ -12,13 +12,6 @@ namespace Backgammon
 		public float slotHeight;
 		public float tokenWidth;
 
-		// right now player is light, and opponent is dark
-		public enum Side
-		{
-			light,
-			dark,
-			empty
-		}
 		//maybe useful later
 		public enum TokenState
 		{
@@ -34,7 +27,7 @@ namespace Backgammon
 		//private Token[] tokens = new Token[30];
 		private GameObject prefabPeon;
 		// I don't know how to create tupples, so I create tables, 
-		// used for start position
+		// used for start snapshot
 //		public static readonly int[] initPos = new int[] { 23, 12, 7, 5};
 //		public static readonly int[] initQty = new int[] { 2,  5,  3, 5};
 
@@ -50,7 +43,7 @@ namespace Backgammon
 			Vector3 slotPos = new Vector3();
 			for (int id = 1; id < 25; id++)
 			{
-				// TokenStack(int id, Vector3 startposition, Vector3 orientation, Vector3 offset)
+				// TokenStack(int id, Vector3 startsnapshot, Vector3 orientation, Vector3 offset)
 				if (id < 7){
 					slotPos = new Vector3 (this.spineWidth/2.0f + (6.5f - id) * this.slotWidth, 0.1f, -this.slotHeight + this.slotWidth/2.0f);
 					slots[id] = new TokenStack(slotPos, orientation,offset);
@@ -97,15 +90,15 @@ namespace Backgammon
 			prefabPeon = Resources.Load<GameObject>("Token");
 		}
 
-		public void SetPosition(BGPosition position){
+		public void SetSnapshot(BGSnapshot snapshot){
 			// not tested for captures, and no homes check
-			for (int i = 0; i < position.Length; i++)
+			for (int i = 0; i < snapshot.Length; i++)
 			{
 				{
-					if (position[i].qty > 0 ){
-						for (int j=0; j<position[i].qty; j++){
+					if (snapshot[i].qty > 0 ){
+						for (int j=0; j<snapshot[i].qty; j++){
 							Token t = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
-							t.SetSide(position[i].side);
+							t.SetSide(snapshot[i].side);
 							slots[i].AddToken(t);
 						}
 					}
@@ -116,7 +109,7 @@ namespace Backgammon
 		public void PlayMove(Move m, Board.Side side){
 			// If Capture 
 			if (slots[m.dest].side == BGEngine.OppositeSide(side)){
-				slots[BGPosition.GetBarIndex(BGEngine.OppositeSide(side))].AddToken(slots[m.dest].RemoveToken());
+				slots[BGSnapshot.GetBarIndex(BGEngine.OppositeSide(side))].AddToken(slots[m.dest].RemoveToken());
 			}
 			slots[m.dest].AddToken(slots[m.source].RemoveToken());
 		}
