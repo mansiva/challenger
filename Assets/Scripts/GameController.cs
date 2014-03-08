@@ -70,7 +70,7 @@ namespace Backgammon
 				break;
 
 			case States.waitingForPlayersMove:
-				if (Time.time - _startTime > 2f)
+				if (Time.time - _startTime > 1f)
 					currentState = States.throwDice;
 				break;
 			}

@@ -140,7 +140,7 @@ namespace Backgammon
 
 		private List<int> PossibleSources(){
 			List<int> solutions = new List<int> ();
-			if (this.snapshot[25] > 0){ // player is forced to get bar in
+			if (this.snapshot[25] != 0){ // player is forced to get bar in
 				solutions.Add(25);
 			}
 			else {
