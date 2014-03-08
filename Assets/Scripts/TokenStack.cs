@@ -11,6 +11,7 @@ namespace Backgammon
 		public Vector3 orientation;
 		public Vector3 offset;
 		public Stack<Token> tokens;
+		public bool side;
 			
 		public TokenStack(Vector3 snapshot, Vector3 orientation, Vector3 offset)
 		{
@@ -28,6 +29,7 @@ namespace Backgammon
 			token.transform.localPosition = this.startPosition + this.tokens.Count * this.offset;
 			token.transform.localEulerAngles = this.orientation;
 			tokens.Push (token);
+			side = token.side;
 		}
 
 		public Token RemoveToken()
@@ -39,7 +41,6 @@ namespace Backgammon
 		public int Count() {
 			return this.tokens.Count;
 		}
-
 	}
 
 }

@@ -164,7 +164,7 @@ namespace Backgammon
 				}
 				else { // BearOff possible ?
 					if(BearingOffRule(sources[i], die)){
-						solutions.Add(new Move(sources[i], -1));
+						solutions.Add(new Move(sources[i], -1));// -1 means bearing off ?
 					}
 				}
 			}
@@ -173,7 +173,7 @@ namespace Backgammon
 		}
 
 		// returns a list of solutions (= list of moves)
-		public List<List <Move>> AllSolutions(int die1, int die2){
+		public List<List <Move>> AllSolutions(int die1, int die2, bool side){
 			//List<List <Move>> result = new List<List <Move>> ();
 			// doubles or singles
 			List <Stack<int>> diceConfig = new List<Stack<int>> ();

@@ -17,7 +17,7 @@ namespace Backgammon
 		// the Board can display a board
 		private Board board;
 		private BGSnapshot snapshot;
-
+		private bool side;
 		private float _startTime;
 
 		private States currentState;
@@ -32,6 +32,7 @@ namespace Backgammon
 			board = boardObject.GetComponent<Board>();
 			snapshot = new BGSnapshot(BGSnapshot.GetStartSnapshot());
 			currentState = States.loaded;
+			side = true;
 		}
 		
 		// Update is called once per frame
@@ -54,18 +55,18 @@ namespace Backgammon
 			case States.throwDice:
 				_startTime = Time.time;
 				currentState = States.waitingForPlayersMove;
-				//side = BGEngine.OppositeSide(side);
 
 				int d1 = Random.Range(1,6);
 				int d2 = Random.Range(1,6);
 				Debug.Log(snapshot.toString());
 				Debug.Log("Dice1: "+ d1 + ", Dice2: "+ d2);
-				List<List <Move>> sols = snapshot.AllSolutions(d1, d2);
+				List<List <Move>> sols = snapshot.AllSolutions(d1, d2, side);
 				List<Move> sol = sols[Random.Range(0, sols.Count)];
 				snapshot = snapshot.ProjectSolution( sol );
 				Debug.Log(snapshot.toString());
+				board.PlaySolution(sol,side);
 				snapshot.Reverse();
-				//		board.PlaySolution(sol, side);
+				side = !side;
 				break;
 
 			case States.waitingForPlayersMove:
