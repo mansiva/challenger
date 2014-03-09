@@ -6,7 +6,7 @@ namespace Backgammon
 {
 	public class GameController : MonoBehaviour
 	{
-		public enum States
+		public enum State
 		{
 			loaded,
 			started,
@@ -14,67 +14,70 @@ namespace Backgammon
 			waitingForPlayersMove,
 		}
 
+		// Temp dice
+		public UILabel dice1;
+		public UILabel dice2;
+
 		// the Board can display a board
 		private Board board;
 		private BGSnapshot snapshot;
 		private bool side;
-		private float _startTime;
+		private State currentState;
 
-		private States currentState;
+		// ------------------------------------------------------------
 		// Use this for initialization
-		void Start ()
+		// ------------------------------------------------------------
+		void Awake ()
 		{
-			// Load the prefab Assets/Resources/Board.prefab
-			Debug.Log("Start");
-			GameObject prefabBoard = Resources.Load<GameObject>("Board");
-			GameObject boardObject = NGUITools.AddChild(gameObject, prefabBoard);
-			// Get script Board attached to prefab
-			board = boardObject.GetComponent<Board>();
+			// TODO: No need for this now since we create it in reset (temp)
+			//board = NGUITools.AddChild(gameObject, Resources.Load<GameObject>("Board")).GetComponent<Board>();
+		}
+
+
+		void Start()
+		{
+			OnReset ();
+		}
+
+		// ------------------------------------------------------------
+		// Reset board to starting position
+		// ------------------------------------------------------------
+		void OnReset()
+		{
+			// TODO: Board should have a function to set a specific snapshot
+			if (board != null)
+				Destroy (board.gameObject);
+			board = NGUITools.AddChild(gameObject, Resources.Load<GameObject>("Board")).GetComponent<Board>();
+			dice1.text = "";
+			dice2.text = "";
+
 			snapshot = new BGSnapshot(BGSnapshot.GetStartSnapshot());
-			currentState = States.loaded;
+			board.SetSnapshot(snapshot);
+			currentState = State.loaded;
 			side = true;
 		}
-		
-		// Update is called once per frame
-		void Update ()
+
+
+		// ------------------------------------------------------------
+		// Simulate next move
+		// ------------------------------------------------------------
+		void OnSimulate()
 		{
-			switch (currentState)
-			{
-			case States.loaded:
-				Debug.Log("States.loaded");
-				currentState = States.started;
-				board.SetSnapshot(snapshot);
-				break;
+			int d1 = Random.Range(1,6);
+			int d2 = Random.Range(1,6);
+			dice1.text = d1.ToString ();
+			dice2.text = d2.ToString ();
 
-			case States.started:
-				// choose a side
-				currentState = States.throwDice;
-//				side = Board.Side.dark;
-				break;
-
-			case States.throwDice:
-				_startTime = Time.time;
-				currentState = States.waitingForPlayersMove;
-
-				int d1 = Random.Range(1,6);
-				int d2 = Random.Range(1,6);
-				Debug.Log(snapshot.toString());
-				Debug.Log("Dice1: "+ d1 + ", Dice2: "+ d2);
-				List<List <Move>> sols = snapshot.AllSolutions(d1, d2, side);
-				List<Move> sol = sols[Random.Range(0, sols.Count)];
-				snapshot = snapshot.ProjectSolution( sol );
-				Debug.Log(snapshot.toString());
-				board.PlaySolution(sol,side);
-				snapshot.Reverse();
-				side = !side;
-				break;
-
-			case States.waitingForPlayersMove:
-				if (Time.time - _startTime > 1f)
-					currentState = States.throwDice;
-				break;
-			}
+			Debug.Log(snapshot.toString());
+			List<List <Move>> sols = snapshot.AllSolutions(d1, d2, side);
+			List<Move> sol = sols[Random.Range(0, sols.Count)];
+			snapshot = snapshot.ProjectSolution( sol );
+			Debug.Log(snapshot.toString());
+			board.PlaySolution(sol,side);
+			snapshot.Reverse();
+			side = !side;
 		}
 
 	}
+
 }

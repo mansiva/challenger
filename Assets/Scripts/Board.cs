@@ -35,7 +35,7 @@ namespace Backgammon
 		// ---------------------------------------------------------------------------
 		// Create board components
 		// ---------------------------------------------------------------------------
-		void Start ()
+		void Awake ()
 		{
 			// Create the 24 slots. 0 is actually slot 1 lower right corner
 			Vector3 orientation = new Vector3 (270,0,0);
