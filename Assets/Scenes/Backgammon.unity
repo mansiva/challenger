@@ -177,7 +177,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 577032081}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -559.036133, y: -320, z: 0}
+  m_LocalPosition: {x: -547.053955, y: -320, z: 0}
   m_LocalScale: {x: .999900997, y: .999900997, z: .999900997}
   m_Children:
   - {fileID: 1990867086}
@@ -223,7 +223,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 787145108}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .550774515, y: -320, z: 0}
+  m_LocalPosition: {x: 0, y: -320, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1983003622}
@@ -692,7 +692,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1414159750}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 559.036133, y: -320, z: 0}
+  m_LocalPosition: {x: 547.053955, y: -320, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1941442824}
@@ -778,8 +778,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0332779fed0ef54c85f3dad7aae7e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 917889824}
-  functionName: OnSimulate
+  target: {fileID: 0}
+  functionName: 
   onPressScaling: 1
   functionTrigger: 0
   onPressScaleValue: .899999976
@@ -1055,8 +1055,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0332779fed0ef54c85f3dad7aae7e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 917889824}
-  functionName: OnReset
+  target: {fileID: 0}
+  functionName: 
   onPressScaling: 1
   functionTrigger: 0
   onPressScaleValue: .899999976

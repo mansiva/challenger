@@ -92,6 +92,7 @@ namespace Backgammon
 
 		public void SetSnapshot(BGSnapshot snapshot){
 			// not tested for captures, and no homes check
+			// works only once, because it creates the Tokens
 			for (int i = 0; i < snapshot.Length; i++){
 				for (int j=0; j< Mathf.Abs(snapshot[i]); j++){
 					Token t = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
@@ -101,23 +102,19 @@ namespace Backgammon
 			}
 		}
 
-		public void PlayMove(Move m, bool side){
-			// If Capture 
-//				slots[BGSnapshot.GetBarIndex(BGEngine.OppositeSide(side))].AddToken(slots[m.dest].RemoveToken());
-//			}
-			int dest = side ? m.dest : 25 - m.dest;
-			int source = side ? m.source : 25 - m.source;
-			Token s = slots[source].RemoveToken ();
-			if (slots[dest].Count() > 0 && slots[dest].side != s.side){
+		public void PlayMove(Move m){
+			Token s = slots[m.source].RemoveToken ();
+			bool side = s.side;
+			if (m.capture){
 				Debug.Log("Capture !!!!");
-				slots[side? 0:25].AddToken(slots[dest].RemoveToken());
+				slots[side? 0:25].AddToken(slots[m.dest].RemoveToken()); // verify that it's the proper side and bar
 			}
-			slots[dest].AddToken(s);
+			slots[m.dest].AddToken(s);
 		}
 
-		public void PlaySolution(List<Move> solution, bool side){
+		public void PlaySolution(List<Move> solution){
 			for (int i =0 ; i< solution.Count ; i++){
-				PlayMove(solution[i], side);
+				PlayMove(solution[i]);
 			}
 		}
 

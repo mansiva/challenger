@@ -21,7 +21,7 @@ namespace Backgammon
 		// the Board can display a board
 		private Board board;
 		private BGSnapshot snapshot;
-		private bool side;
+		private bool side; // true is black, false is white.
 		private State currentState;
 
 		// ------------------------------------------------------------
@@ -69,11 +69,12 @@ namespace Backgammon
 			dice2.text = d2.ToString ();
 
 			Debug.Log(snapshot.toString());
-			List<List <Move>> sols = snapshot.AllSolutions(d1, d2, side);
+			List<List <Move>> sols = snapshot.AllSolutions(d1, d2);
 			List<Move> sol = sols[Random.Range(0, sols.Count)];
+			if (!side) Move.ListMoveReverse(sol);
 			snapshot = snapshot.ProjectSolution( sol );
 			Debug.Log(snapshot.toString());
-			board.PlaySolution(sol,side);
+			board.PlaySolution(sol);
 			snapshot.Reverse();
 			side = !side;
 		}
