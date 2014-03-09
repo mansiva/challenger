@@ -70,11 +70,14 @@ namespace Backgammon
 
 			Debug.Log(snapshot.toString());
 			List<List <Move>> sols = snapshot.AllSolutions(d1, d2);
-			List<Move> sol = sols[Random.Range(0, sols.Count)];
-			if (!side) Move.ListMoveReverse(sol);
-			snapshot = snapshot.ProjectSolution( sol );
+			List<Move> rsol = sols[Random.Range(0, sols.Count + 1)];
+			snapshot = snapshot.ProjectSolution( rsol ); 
+			if (!side){
+				Debug.Log("Reversing for the board");
+				Move.ListMoveReverse(rsol);
+			} 
 			Debug.Log(snapshot.toString());
-			board.PlaySolution(sol);
+			board.PlaySolution(rsol);
 			snapshot.Reverse();
 			side = !side;
 		}

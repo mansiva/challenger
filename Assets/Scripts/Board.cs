@@ -103,10 +103,12 @@ namespace Backgammon
 		}
 
 		public void PlayMove(Move m){
+			Debug.Log(string.Format("Move from:{0} To:{1}",m.source, m.dest));
+
 			Token s = slots[m.source].RemoveToken ();
 			bool side = s.side;
 			if (m.capture){
-				Debug.Log("Capture !!!!");
+				Debug.Log( string.Format("Capture !!!! at {0} side:{1}",m.dest, side ? 0:25) );
 				slots[side? 0:25].AddToken(slots[m.dest].RemoveToken()); // verify that it's the proper side and bar
 			}
 			slots[m.dest].AddToken(s);
@@ -116,12 +118,6 @@ namespace Backgammon
 			for (int i =0 ; i< solution.Count ; i++){
 				PlayMove(solution[i]);
 			}
-		}
-
-		public void TESTS(){
-			// TEST THINGS
-			//homes[(int)Board.Side.dark].AddToken (slots [0].RemoveToken ());
-			//captured[(int)Board.Side.dark].AddToken (slots [0].RemoveToken ());
 		}
 	}
 }

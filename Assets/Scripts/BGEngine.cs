@@ -72,7 +72,8 @@ namespace Backgammon
 		public static BGSnapshot GetStartSnapshot(){
 			// create the start snapshot, or simply returns it if already created
 			if (startSnapshot == null){
-				startSnapshot = new BGSnapshot(new int[] {0, -2,0,0,0,0,5, 0,3,0,0,0,-5, 5,0,0,0,-3,0, -5,0,0,0,0,2, 0});
+				// test with one capture to start with
+				startSnapshot = new BGSnapshot(new int[] {-1, -1,0,0,0,0,5, 0,3,0,0,0,-5, 5,0,0,0,-3,0, -5,0,0,0,0,1, 1});
 			}
 			
 			return startSnapshot;
@@ -131,8 +132,10 @@ namespace Backgammon
 		public BGSnapshot ProjectMove( Move m){
 			BGSnapshot board = new BGSnapshot(this);
 			// Check capture
-			if (board[m.dest] < 0){ // < 0 means -1 because -2 wouldn't be possible
-				board[25] -= 1; // put an opponent in 25
+			if (board[m.dest] < 0){ // < 0 should be 1 opponent -2 wouldn't be possible
+				board[0] -= 1; // put an opponent in 0
+//				Debug.Log(string.Format("capture in Project move {0}", board[m.dest]));
+				board[m.dest] = 1;
 				m.capture = true;
 			}
 			else {
