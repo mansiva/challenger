@@ -15,13 +15,23 @@ namespace Backgammon
 	{
 		public int source;
 		public int dest;
-		
+		public bool capture;
+		public bool bearoff;
+
 		public Move(int s, int d){
 			source = s;
 			dest = d;
+			capture=false;
+			bearoff=false;
+		}
+
+		public Move Reverse(){
+			dest = 25 - dest;
+			source = 25 - source;
+			return this;
 		}
 		public string toString(){
-			return string.Format("{0}/{1}",source, dest);
+			return string.Format("{0}/{1}{2}",source, dest, capture ? "*":"");
 		}
 		
 		public static string ListMoveToString (List<Move> moves){
@@ -30,6 +40,11 @@ namespace Backgammon
 				result = result + " " + moves[i].toString();
 			}
 			return result;
+		}
+		public static void ListMoveReverse (List<Move> moves){
+			for (int i=0 ; i<moves.Count ; i++){
+				moves[i].Reverse();
+			}
 		}
 	}
 	
@@ -81,7 +96,7 @@ namespace Backgammon
 		public string toString(){
 			string s = "";
 			for (int i=0; i<snapshot.Length ; i++){
-				s+= " " + snapshot[i];
+				s+= string.Format("{0,3}",snapshot[i]);
 			}
 			return s;
 		}
@@ -116,13 +131,13 @@ namespace Backgammon
 		public BGSnapshot ProjectMove( Move m){
 			BGSnapshot board = new BGSnapshot(this);
 			// Check capture
-			if (board[m.dest] < 0){ // < 0 means -1
+			if (board[m.dest] < 0){ // < 0 means -1 because -2 wouldn't be possible
 				board[25] -= 1; // put an opponent in 25
+				m.capture = true;
 			}
 			else {
 				board[m.dest] += 1;
 			}
-			// empty check and side
 			board[m.source] -= 1;
 			return board;
 		}
@@ -131,7 +146,6 @@ namespace Backgammon
 		public BGSnapshot ProjectSolution( List<Move> solution){
 			BGSnapshot snapshot = new BGSnapshot(this);
 			Debug.Log(Move.ListMoveToString(solution));
-
 			for (int i=0 ; i<solution.Count ; i++){
 				snapshot = snapshot.ProjectMove(solution[i]);
 			}
@@ -173,7 +187,7 @@ namespace Backgammon
 		}
 
 		// returns a list of solutions (= list of moves)
-		public List<List <Move>> AllSolutions(int die1, int die2, bool side){
+		public List<List <Move>> AllSolutions(int die1, int die2){
 			//List<List <Move>> result = new List<List <Move>> ();
 			// doubles or singles
 			List <Stack<int>> diceConfig = new List<Stack<int>> ();
