@@ -33,8 +33,12 @@ namespace Backgammon
 		// ------------------------------------------------------------
 		void Awake ()
 		{
-			// TODO: No need for this now since we create it in reset (temp)
-			//board = NGUITools.AddChild(gameObject, Resources.Load<GameObject>("Board")).GetComponent<Board>();
+			if (board != null)
+				Destroy (board.gameObject);
+			board = NGUITools.AddChild(gameObject, Resources.Load<GameObject>("Board")).GetComponent<Board>();
+			board.InitBoard (); // creates the token
+			white = new Color(1,1,1);
+			black = new Color(0,0,0);
 		}
 
 
@@ -48,14 +52,8 @@ namespace Backgammon
 		// ------------------------------------------------------------
 		void OnReset()
 		{
-			// TODO: Board should have a function to set a specific snapshot
-			if (board != null)
-				Destroy (board.gameObject);
-			board = NGUITools.AddChild(gameObject, Resources.Load<GameObject>("Board")).GetComponent<Board>();
 			dice1.text = "";
 			dice2.text = "";
-			white = new Color(1,1,1);
-			black = new Color(0,0,0);
 
 			snapshot = new BGSnapshot(BGSnapshot.GetStartSnapshot());
 			board.SetSnapshot(snapshot);

@@ -46,19 +46,19 @@ namespace Backgammon
 				// TokenStack(int id, Vector3 startsnapshot, Vector3 orientation, Vector3 offset)
 				if (id < 7){
 					slotPos = new Vector3 (this.spineWidth/2.0f + (6.5f - id) * this.slotWidth, 0.1f, -this.slotHeight + this.slotWidth/2.0f);
-					slots[id] = new TokenStack(slotPos, orientation,offset);
+					slots[id] = new TokenStack(slotPos, orientation,offset, 6);
 				}
 				else if (id < 13) {
 					slotPos = new Vector3 (-this.spineWidth/2.0f + (6.5f - id) * this.slotWidth,  0.1f, -this.slotHeight + this.slotWidth/2.0f);
-					slots[id] = new TokenStack(slotPos, orientation,offset);
+					slots[id] = new TokenStack(slotPos, orientation,offset, 6);
 				}
 				else if (id < 19){
 					slotPos = new Vector3 (-this.spineWidth/2.0f + (id - 18.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
-					slots[id] = new TokenStack(slotPos, orientation,-offset);
+					slots[id] = new TokenStack(slotPos, orientation,-offset, 6);
 				}
 				else if (id < 25){
 					slotPos = new Vector3 (this.spineWidth/2.0f + (id - 18.5f) * this.slotWidth,  0.1f, this.slotHeight - this.slotWidth/2.0f);
-					slots[id] = new TokenStack(slotPos, orientation,-offset);
+					slots[id] = new TokenStack(slotPos, orientation,-offset, 6);
 				}
 			}
 
@@ -66,38 +66,65 @@ namespace Backgammon
 			orientation = new Vector3 (0,0,0);
 			offset = new Vector3 (0, 0, this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, -this.slotHeight);
-			homes[1] = new TokenStack(slotPos, orientation,offset);
+			homes[1] = new TokenStack(slotPos, orientation,offset, 15);
 
 			// and light
 			orientation = new Vector3 (180,0,0);
 			offset = new Vector3 (0, 0, -this.tokenWidth);
 			slotPos = new Vector3(this.spineWidth/2.0f + 6.5f * this.slotWidth + this.borderWidth, 0.1f + this.slotWidth/2.0f, this.slotHeight);
-			homes[0] = new TokenStack(slotPos, orientation,offset);
+			homes[0] = new TokenStack(slotPos, orientation,offset, 15);
 
 			// Create Capture Zones for dark
 			orientation = new Vector3 (270,0,0);
 			offset = new Vector3 (0, 0, -this.slotWidth);
 			slotPos = new Vector3(0, 0.1f, -this.slotWidth/2.0f);
-			slots[0] = new TokenStack(slotPos, orientation,offset);
+			slots[0] = new TokenStack(slotPos, orientation,offset, 6);
 
 			// and light
 			orientation = new Vector3 (270,0,0);
 			offset = new Vector3 (0, 0, this.slotWidth);
 			slotPos = new Vector3(0, 0.1f, this.slotWidth/2.0f);
-			slots[25] = new TokenStack(slotPos, orientation,offset);
+			slots[25] = new TokenStack(slotPos, orientation,offset, 6);
 
 			// ref to Token
 			prefabPeon = Resources.Load<GameObject>("Token");
 		}
 
 		public void SetSnapshot(BGSnapshot snapshot){
-			// not tested for captures, and no homes check
-			// works only once, because it creates the Tokens
+			this.HomeBoard (); // clean the existing board all tokens back in home
 			for (int i = 0; i < snapshot.Length; i++){
 				for (int j=0; j< Mathf.Abs(snapshot[i]); j++){
-					Token t = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
-					t.SetSide(snapshot[i]>0);
-					slots[i].AddToken(t);
+					if (snapshot[i]>0){
+						slots[i].AddToken(homes[1].RemoveToken()); // verify side
+					}
+					else {
+						slots[i].AddToken(homes[0].RemoveToken()); // verify side
+
+					}
+				}
+			}
+		}
+
+		// creates the tokens with their side.
+		public void InitBoard(){
+			bool side;
+			for (int i = 0; i < 30; i++){
+				Token t = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
+				side = i<15; // a verifier
+				t.SetSide(side);
+				homes[side? 1:0].AddToken(t);
+			}
+		}
+
+		// find all tokens and place them in the respective Homes
+		public void HomeBoard(){
+			Token t;
+			bool side;
+			for (int i = 0; i < 26; i++){ // browse the slots and captures
+				for (int j=0; j< slots[i].Count(); j++){ // check with Ivan if have a Count attribute is possible
+					t = slots[i].RemoveToken();
+					side = t.side;
+					homes[side? 1:0].AddToken(t);
 				}
 			}
 		}

@@ -12,13 +12,15 @@ namespace Backgammon
 		public Vector3 offset;
 		public Stack<Token> tokens;
 		public bool side;
+		public int maxSize;
 			
-		public TokenStack(Vector3 snapshot, Vector3 orientation, Vector3 offset)
+		public TokenStack(Vector3 snapshot, Vector3 orientation, Vector3 offset, int max)
 		{
 			this.startPosition = snapshot;
 			this.orientation = orientation;
 			this.offset = offset;
 			this.tokens = new Stack<Token> ();
+			this.maxSize = max;
 		}
 
 		public  void AddToken(Token token)
@@ -26,7 +28,7 @@ namespace Backgammon
 			//token.setState(Board.TokenState.onBoard);
 //			this.side = token.side;
 			// snapshot the token using the snapshot, offset, and tokens.Count
-			token.transform.localPosition = this.startPosition + this.tokens.Count * this.offset;
+			token.transform.localPosition = this.startPosition + this.tokens.Count%this.maxSize * this.offset;
 			token.transform.localEulerAngles = this.orientation;
 			tokens.Push (token);
 			side = token.side;
