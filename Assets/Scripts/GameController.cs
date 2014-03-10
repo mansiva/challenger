@@ -17,6 +17,10 @@ namespace Backgammon
 		// Temp dice
 		public UILabel dice1;
 		public UILabel dice2;
+		// Temp colors b & w
+		private Color black;
+		private Color white;
+
 
 		// the Board can display a board
 		private Board board;
@@ -50,6 +54,8 @@ namespace Backgammon
 			board = NGUITools.AddChild(gameObject, Resources.Load<GameObject>("Board")).GetComponent<Board>();
 			dice1.text = "";
 			dice2.text = "";
+			white = new Color(1,1,1);
+			black = new Color(0,0,0);
 
 			snapshot = new BGSnapshot(BGSnapshot.GetStartSnapshot());
 			board.SetSnapshot(snapshot);
@@ -63,17 +69,22 @@ namespace Backgammon
 		// ------------------------------------------------------------
 		void OnSimulate()
 		{
-			int d1 = Random.Range(1,6);
-			int d2 = Random.Range(1,6);
+			//			int d1 = Random.Range(1,6);
+			//			int d2 = Random.Range(1,6);
+			int d1 = 1;
+			int d2 = 6;
 			dice1.text = d1.ToString ();
 			dice2.text = d2.ToString ();
+			dice1.color = side? black:white;
+			dice2.color = side? black:white;
 
 			Debug.Log(snapshot.toString());
 			List<List <Move>> sols = snapshot.AllSolutions(d1, d2);
-			List<Move> rsol = sols[Random.Range(0, sols.Count + 1)];
+			Debug.Log(string.Format("Solutions :{0}",sols.Count));
+			List<Move> rsol = sols[Random.Range(0, sols.Count)];
 			snapshot = snapshot.ProjectSolution( rsol ); 
 			if (!side){
-				Debug.Log("Reversing for the board");
+//				Debug.Log("Reversing for the board");
 				Move.ListMoveReverse(rsol);
 			} 
 			Debug.Log(snapshot.toString());

@@ -73,7 +73,7 @@ namespace Backgammon
 			// create the start snapshot, or simply returns it if already created
 			if (startSnapshot == null){
 				// test with one capture to start with
-				startSnapshot = new BGSnapshot(new int[] {-1, -1,0,0,0,0,5, 0,3,0,0,0,-5, 5,0,0,0,-3,0, -5,0,0,0,0,1, 1});
+				startSnapshot = new BGSnapshot(new int[] {-1, -1,0,0,0,0,5, 0,3,0,0,0,-5, 5,0,0,0,-3,0, -5,0,0,0,0,0, 2});
 			}
 			
 			return startSnapshot;
@@ -148,7 +148,7 @@ namespace Backgammon
 		// returns a Snapshot if list of moves are played
 		public BGSnapshot ProjectSolution( List<Move> solution){
 			BGSnapshot snapshot = new BGSnapshot(this);
-			Debug.Log(Move.ListMoveToString(solution));
+//			Debug.Log(Move.ListMoveToString(solution));
 			for (int i=0 ; i<solution.Count ; i++){
 				snapshot = snapshot.ProjectMove(solution[i]);
 			}
@@ -233,7 +233,7 @@ namespace Backgammon
 		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGSnapshot currentBoard){
 			//pop die and get possibleMoves
 			//currentBoard.PrintSnapshot();
-			foreach(Move m in currentBoard.MoveDie(dice.Pop()))
+			foreach(Move m in currentBoard.MoveDie(dice.Pop())) // eventually a bug here when list is empty
 			{
 				BGSnapshot newBoard = currentBoard.ProjectMove(m);
 				//Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));

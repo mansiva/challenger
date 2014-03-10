@@ -103,12 +103,12 @@ namespace Backgammon
 		}
 
 		public void PlayMove(Move m){
-			Debug.Log(string.Format("Move from:{0} To:{1}",m.source, m.dest));
+//			Debug.Log(string.Format("Move from:{0} To:{1}",m.source, m.dest));
 
 			Token s = slots[m.source].RemoveToken ();
 			bool side = s.side;
 			if (m.capture){
-				Debug.Log( string.Format("Capture !!!! at {0} side:{1}",m.dest, side ? 0:25) );
+//				Debug.Log( string.Format("Capture !!!! at {0} side:{1}",m.dest, side ? 0:25) );
 				slots[side? 0:25].AddToken(slots[m.dest].RemoveToken()); // verify that it's the proper side and bar
 			}
 			slots[m.dest].AddToken(s);
