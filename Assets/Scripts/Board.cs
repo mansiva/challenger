@@ -111,7 +111,12 @@ namespace Backgammon
 //				Debug.Log( string.Format("Capture !!!! at {0} side:{1}",m.dest, side ? 0:25) );
 				slots[side? 0:25].AddToken(slots[m.dest].RemoveToken()); // verify that it's the proper side and bar
 			}
-			slots[m.dest].AddToken(s);
+			if(m.bearoff){
+				homes[side? 1:0].AddToken(s);
+			}
+			else{
+				slots[m.dest].AddToken(s);
+			}
 		}
 
 		public void PlaySolution(List<Move> solution){

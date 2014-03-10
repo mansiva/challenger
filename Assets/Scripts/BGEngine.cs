@@ -131,15 +131,17 @@ namespace Backgammon
 		// returns the new snapshot if move is played, assume validity of move
 		public BGSnapshot ProjectMove( Move m){
 			BGSnapshot board = new BGSnapshot(this);
-			// Check capture
-			if (board[m.dest] < 0){ // < 0 should be 1 opponent -2 wouldn't be possible
-				board[0] -= 1; // put an opponent in 0
-//				Debug.Log(string.Format("capture in Project move {0}", board[m.dest]));
-				board[m.dest] = 1;
-				m.capture = true;
-			}
-			else {
-				board[m.dest] += 1;
+			// Check nothing to be done on the dest point if bearoff.
+			if (!m.bearoff){
+				if (board[m.dest] < 0){ // Test if capture
+					board[0] -= 1; // put an opponent in 0
+	//				Debug.Log(string.Format("capture in Project move {0}", board[m.dest]));
+					board[m.dest] = 1;
+					m.capture = true;
+				}
+				else {
+					board[m.dest] += 1;
+				}
 			}
 			board[m.source] -= 1;
 			return board;
@@ -181,7 +183,9 @@ namespace Backgammon
 				}
 				else { // BearOff possible ?
 					if(BearingOffRule(sources[i], die)){
-						solutions.Add(new Move(sources[i], -1));// -1 means bearing off ?
+						Move m = new Move(sources[i],0); // we have no dest point, but bearOff is true
+						m.bearoff = true;
+						solutions.Add(m);//
 					}
 				}
 			}
@@ -233,23 +237,31 @@ namespace Backgammon
 		public  void Compute(Stack<int> dice, List<Move> currentSolution, List<List <Move>> finalSolution, BGSnapshot currentBoard){
 			//pop die and get possibleMoves
 			//currentBoard.PrintSnapshot();
-			foreach(Move m in currentBoard.MoveDie(dice.Pop())) // eventually a bug here when list is empty
+//			Debug.Log(string.Format("Compute with a dice count of {0}",dice.Count));
+
+			// when first die has no move go deeper
+			// when second die has no move doesn't add the solution
+			BGSnapshot newBoard;
+			List<Move> solution;
+			List<Move> moves = currentBoard.MoveDie(dice.Pop());
+			if (moves.Count == 0 && dice.Count>0){
+				Compute(new Stack<int>(dice), currentSolution, finalSolution, currentBoard);
+			}
+			foreach(Move m in moves)
 			{
-				BGSnapshot newBoard = currentBoard.ProjectMove(m);
-				//Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
-				List<Move> solution = new List<Move>(currentSolution);
+				newBoard = currentBoard.ProjectMove(m);
+//				Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
+				solution = new List<Move>(currentSolution);
 				solution.Add(m);
 				if (dice.Count == 0){
 				//addcurrentcolution To finalSolution
 					finalSolution.Add(solution); 
-//					Debug.Log ("Adding Current Solution :" + ListMoveInString(solution));
-					// currentSolution = new List<Backgammon.Move>(); // new Current Solution
+//					Debug.Log ("Adding Current Solution :" + Move.ListMoveToString(solution));
 				}
 				else{	// Compute dice currentSolution currentBoard
 					//Debug.Log(string.Format("Going deeper with {0}", dice));
 					Compute(new Stack<int>(dice), solution, finalSolution, newBoard);
 				}
-					//printNode(child); //<-- recursive
 			}
 		}
 	}

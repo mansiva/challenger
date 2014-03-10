@@ -69,10 +69,10 @@ namespace Backgammon
 		// ------------------------------------------------------------
 		void OnSimulate()
 		{
-			//			int d1 = Random.Range(1,6);
-			//			int d2 = Random.Range(1,6);
-			int d1 = 1;
-			int d2 = 6;
+			int d1 = Random.Range(1,6);
+			int d2 = Random.Range(1,6);
+//			int d1 = 1;
+//			int d2 = 6;
 			dice1.text = d1.ToString ();
 			dice2.text = d2.ToString ();
 			dice1.color = side? black:white;
@@ -81,14 +81,16 @@ namespace Backgammon
 			Debug.Log(snapshot.toString());
 			List<List <Move>> sols = snapshot.AllSolutions(d1, d2);
 			Debug.Log(string.Format("Solutions :{0}",sols.Count));
-			List<Move> rsol = sols[Random.Range(0, sols.Count)];
-			snapshot = snapshot.ProjectSolution( rsol ); 
-			if (!side){
-//				Debug.Log("Reversing for the board");
-				Move.ListMoveReverse(rsol);
-			} 
-			Debug.Log(snapshot.toString());
-			board.PlaySolution(rsol);
+			if(sols.Count > 0){ // skip if there is no move
+				List<Move> rsol = sols[Random.Range(0, sols.Count)];
+				snapshot = snapshot.ProjectSolution( rsol ); 
+				if (!side){
+	//				Debug.Log("Reversing for the board");
+					Move.ListMoveReverse(rsol);
+				} 
+				Debug.Log(snapshot.toString());
+				board.PlaySolution(rsol);
+			}
 			snapshot.Reverse();
 			side = !side;
 		}
