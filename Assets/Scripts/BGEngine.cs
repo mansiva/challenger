@@ -73,7 +73,7 @@ namespace Backgammon
 			// create the start snapshot, or simply returns it if already created
 			if (startSnapshot == null){
 				// test with one capture to start with
-				startSnapshot = new BGSnapshot(new int[] {-1, -1,0,0,0,0,5, 0,3,0,0,0,-5, 5,0,0,0,-3,0, -5,0,0,0,0,0, 2});
+				startSnapshot = new BGSnapshot(new int[] {0, -2,0,0,0,0,5, 0,3,0,0,0,-5, 5,0,0,0,-3,0, -5,0,0,0,0,2, 0});
 			}
 			
 			return startSnapshot;
@@ -105,7 +105,7 @@ namespace Backgammon
 		// can the player bear off ?
 		public bool BearingOff(){
 			for(int i=7; i<26 ; i++){ // take the 25 bar into account
-				if (snapshot[i] > 0){ // not if there is token not in the home board
+				if (snapshot[i] > 0){ // all token not in the home board
 					return false;
 				}
 			}
@@ -121,9 +121,6 @@ namespace Backgammon
 						return false;
 					}
 				}
-			}
-			else {
-				return true;
 			}
 			return true;
 		}
