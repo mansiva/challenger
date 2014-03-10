@@ -102,28 +102,6 @@ namespace Backgammon
 			return s;
 		}
 
-		// can the player bear off ?
-		public bool BearingOff(){
-			for(int i=7; i<26 ; i++){ // take the 25 bar into account
-				if (snapshot[i] > 0){ // all token not in the home board
-					return false;
-				}
-			}
-			return true;
-		}
-
-		//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
-		private bool BearingOffRule(int point, int die){ 
-			if (!BearingOff()) return false; // you can't bear off
-			if (die > point){ // trying to use a higher die on a lower point
-				for(int i=point+1; i<7 ; i++){ // check if there is any checkers on any higher points.
-					if (snapshot[i] > 1){
-						return false;
-					}
-				}
-			}
-			return true;
-		}
 
 		// returns the new snapshot if move is played, assume validity of move
 		public BGSnapshot ProjectMove( Move m){
@@ -152,6 +130,29 @@ namespace Backgammon
 				snapshot = snapshot.ProjectMove(solution[i]);
 			}
 			return snapshot;
+		}
+
+		// can the player bear off ?
+		public bool BearingOff(){
+			for(int i=7; i<26 ; i++){ // take the 25 bar into account
+				if (snapshot[i] > 0){ // all token not in the home board
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
+		private bool BearingOffRule(int point, int die){ 
+			if (!BearingOff()) return false; // you can't bear off
+			if (die > point){ // trying to use a higher die on a lower point
+				for(int i=point+1; i<7 ; i++){ // check if there is any checkers on any higher points.
+					if (snapshot[i] > 1){
+						return false;
+					}
+				}
+			}
+			return true;
 		}
 
 		private List<int> PossibleSources(){
@@ -187,6 +188,47 @@ namespace Backgammon
 				}
 			}
 			//			Debug.Log ("MoveDie -> "+ListMoveInString(solutions));
+			return solutions;
+		}
+
+		// Updated, streamlined version, with only one scan of the Board
+		private List<Move> MoveDie2(int die){
+			List<Move> solutions = new List<Move> ();
+			Move m;
+			int bearOffIndex = 0; // the further tocken
+			// Normal Moves
+			for (int i=25; i>die; i--) { // if die = 6 i will stop at 7
+				if  (snapshot[i] > 0) { // is there a Tocken to consider ?
+					bearOffIndex = Math.Max(i,bearOffIndex); // the further tocken
+					if (snapshot[i-die] < -1){ // Point is occupied
+						if (i == 25) return solutions; 
+					}
+					else if (snapshot[i-die] == -1){ // Capture
+						m = new Move(i, i-die);
+						m.capture = true;
+						solutions.Add(m);
+						if (i == 25) return solutions; 
+					} else { 						// simple enter
+						m = new Move(i, i-die);
+						solutions.Add(m);
+						if (i == 25) return solutions; 
+					}
+					// simple move
+				}
+			}
+			// BearOff Moves
+			if (bearOffIndex < 7){
+				for (int i=die; i>0; i--) { // last tokens
+					if  (snapshot[i] > 0) { // is there a Tocken to consider ?
+						bearOffIndex = Math.Max(i,bearOffIndex); // the further tocken
+						if (bearOffIndex <= die){
+							m = new Move(i,0 );
+							m.bearoff = true;
+							solutions.Add(m);
+						}
+					}
+				}
+			}
 			return solutions;
 		}
 
@@ -240,7 +282,7 @@ namespace Backgammon
 			// when second die has no move doesn't add the solution
 			BGSnapshot newBoard;
 			List<Move> solution;
-			List<Move> moves = currentBoard.MoveDie(dice.Pop());
+			List<Move> moves = currentBoard.MoveDie2(dice.Pop());
 			if (moves.Count == 0 && dice.Count>0){
 				Compute(new Stack<int>(dice), currentSolution, finalSolution, currentBoard);
 			}
@@ -250,12 +292,12 @@ namespace Backgammon
 //				Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
 				solution = new List<Move>(currentSolution);
 				solution.Add(m);
-				if (dice.Count == 0){
+				if (dice.Count == 0){ // No more Die to Compute
 				//addcurrentcolution To finalSolution
 					finalSolution.Add(solution); 
 //					Debug.Log ("Adding Current Solution :" + Move.ListMoveToString(solution));
 				}
-				else{	// Compute dice currentSolution currentBoard
+				else{	// There is still Dice to Compute
 					//Debug.Log(string.Format("Going deeper with {0}", dice));
 					Compute(new Stack<int>(dice), solution, finalSolution, newBoard);
 				}
