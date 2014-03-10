@@ -197,7 +197,7 @@ namespace Backgammon
 			Move m;
 			int bearOffIndex = 0; // the further tocken
 			// Normal Moves
-			for (int i=25; i>die; i--) { // if die = 6 i will stop at 7
+			for (int i=25; i>die; i--) { // if die = 6, will stop at 7
 				if  (snapshot[i] > 0) { // is there a Tocken to consider ?
 					bearOffIndex = Math.Max(i,bearOffIndex); // the further tocken
 					if (snapshot[i-die] < -1){ // Point is occupied

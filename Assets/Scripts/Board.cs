@@ -110,18 +110,21 @@ namespace Backgammon
 			bool side;
 			for (int i = 0; i < 30; i++){
 				Token t = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
-				side = i<15; // a verifier
+				side = (i<15); // a verifier
 				t.SetSide(side);
 				homes[side? 1:0].AddToken(t);
 			}
 		}
 
 		// find all tokens and place them in the respective Homes
+		// bug when not all tokens are home already (it seems)
 		public void HomeBoard(){
 			Token t;
 			bool side;
+			int k;
 			for (int i = 0; i < 26; i++){ // browse the slots and captures
-				for (int j=0; j< slots[i].Count(); j++){ // check with Ivan if have a Count attribute is possible
+				k = slots[i].Count();
+				for (int j=0; j< k; j++){ // check with Ivan if have a Count attribute is possible
 					t = slots[i].RemoveToken();
 					side = t.side;
 					homes[side? 1:0].AddToken(t);

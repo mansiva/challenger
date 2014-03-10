@@ -26,7 +26,7 @@ namespace Backgammon
 		private Board board;
 		private BGSnapshot snapshot;
 		private bool side; // true is black, false is white.
-		private State currentState;
+		//private State currentState;
 
 		// ------------------------------------------------------------
 		// Use this for initialization
@@ -57,7 +57,8 @@ namespace Backgammon
 
 			snapshot = new BGSnapshot(BGSnapshot.GetStartSnapshot());
 			board.SetSnapshot(snapshot);
-			currentState = State.loaded;
+			//board.HomeBoard ();
+			//currentState = State.loaded;
 			side = true;
 		}
 
