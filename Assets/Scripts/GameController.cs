@@ -22,7 +22,7 @@ namespace Backgammon
 		private Color white;
 
 
-		// the Board can display a board
+		// the Board is the view that can display a board
 		private Board board;
 		private BGSnapshot snapshot;
 		private bool side; // true is black, false is white.
