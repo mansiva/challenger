@@ -31,7 +31,7 @@ namespace Backgammon
 			return this;
 		}
 		public string toString(){
-			return string.Format("{0}/{1}{2}",source, dest, capture ? "*":"");
+			return string.Format("{0}/{1}{2}{3}",source, dest, capture ? "*":"",bearoff ? "off":"");
 		}
 		
 		public static string ListMoveToString (List<Move> moves){
@@ -74,6 +74,7 @@ namespace Backgammon
 			if (startSnapshot == null){
 				// test with one capture to start with
 				startSnapshot = new BGSnapshot(new int[] {0, -2,0,0,0,0,5, 0,3,0,0,0,-5, 5,0,0,0,-3,0, -5,0,0,0,0,2, 0});
+//				startSnapshot = new BGSnapshot(new int[] {0, 3,0,0,0,0,0, 0,0,0,0,0,-5, -5,-5,0,0,0,0, 0,0,0,0,0,0, 0});
 			}
 			
 			return startSnapshot;
@@ -132,64 +133,64 @@ namespace Backgammon
 			return snapshot;
 		}
 
-		// can the player bear off ?
-		public bool BearingOff(){
-			for(int i=7; i<26 ; i++){ // take the 25 bar into account
-				if (snapshot[i] > 0){ // all token not in the home board
-					return false;
-				}
-			}
-			return true;
-		}
-		
-		//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
-		private bool BearingOffRule(int point, int die){ 
-			if (!BearingOff()) return false; // you can't bear off
-			if (die > point){ // trying to use a higher die on a lower point
-				for(int i=point+1; i<7 ; i++){ // check if there is any checkers on any higher points.
-					if (snapshot[i] > 1){
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-
-		private List<int> PossibleSources(){
-			List<int> solutions = new List<int> ();
-			if (this.snapshot[25] != 0){ // player is forced to get bar in
-				solutions.Add(25);
-			}
-			else {
-				for (int i=1; i<25 ; i++){
-					if (this.snapshot[i] > 0) solutions.Add(i);
-				}
-			}
-			return solutions;
-		}
-
-		// helper, give a list of move possible for one die
-		private List<Move> MoveDie(int die){
-			List<Move> solutions = new List<Move> ();
-			// TBC
-			List<int> sources = this.PossibleSources();
-			for (int i=0 ; i < sources.Count ; i++){
-				int destinationPoint = sources[i] - die; // update here bear off
-				
-				if ( destinationPoint >= 1 && snapshot[destinationPoint] >= -1) { // is the destination point in the board ?
-					solutions.Add(new Move(sources[i],destinationPoint));
-				}
-				else { // BearOff possible ?
-					if(BearingOffRule(sources[i], die)){
-						Move m = new Move(sources[i],0); // we have no dest point, but bearOff is true
-						m.bearoff = true;
-						solutions.Add(m);//
-					}
-				}
-			}
-			//			Debug.Log ("MoveDie -> "+ListMoveInString(solutions));
-			return solutions;
-		}
+//		// can the player bear off ?
+//		public bool BearingOff(){
+//			for(int i=7; i<26 ; i++){ // take the 25 bar into account
+//				if (snapshot[i] > 0){ // all token not in the home board
+//					return false;
+//				}
+//			}
+//			return true;
+//		}
+//		
+//		//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
+//		private bool BearingOffRule(int point, int die){ 
+//			if (!BearingOff()) return false; // you can't bear off
+//			if (die > point){ // trying to use a higher die on a lower point
+//				for(int i=point+1; i<7 ; i++){ // check if there is any checkers on any higher points.
+//					if (snapshot[i] > 1){
+//						return false;
+//					}
+//				}
+//			}
+//			return true;
+//		}
+//
+//		private List<int> PossibleSources(){
+//			List<int> solutions = new List<int> ();
+//			if (this.snapshot[25] != 0){ // player is forced to get bar in
+//				solutions.Add(25);
+//			}
+//			else {
+//				for (int i=1; i<25 ; i++){
+//					if (this.snapshot[i] > 0) solutions.Add(i);
+//				}
+//			}
+//			return solutions;
+////		}
+//
+//		// helper, give a list of move possible for one die
+//		private List<Move> MoveDie(int die){
+//			List<Move> solutions = new List<Move> ();
+//			// TBC
+//			List<int> sources = this.PossibleSources();
+//			for (int i=0 ; i < sources.Count ; i++){
+//				int destinationPoint = sources[i] - die; // update here bear off
+//				
+//				if ( destinationPoint >= 1 && snapshot[destinationPoint] >= -1) { // is the destination point in the board ?
+//					solutions.Add(new Move(sources[i],destinationPoint));
+//				}
+//				else { // BearOff possible ?
+//					if(BearingOffRule(sources[i], die)){
+//						Move m = new Move(sources[i],0); // we have no dest point, but bearOff is true
+//						m.bearoff = true;
+//						solutions.Add(m);//
+//					}
+//				}
+//			}
+//			//			Debug.Log ("MoveDie -> "+ListMoveInString(solutions));
+//			return solutions;
+//		}
 
 		// Updated, streamlined version, with only one scan of the Board
 		private List<Move> MoveDie2(int die){
@@ -226,6 +227,9 @@ namespace Backgammon
 							m.bearoff = true;
 							solutions.Add(m);
 						}
+						else {
+							Debug.Log("ouais");
+						}
 					}
 				}
 			}
@@ -261,6 +265,7 @@ namespace Backgammon
 				this.Compute(d, new List<Move>(), finalSolution ,this);
 			}
 			// should also compute reversed dice when not double.
+
 			return finalSolution;
 		}
 
@@ -281,17 +286,27 @@ namespace Backgammon
 			// when first die has no move go deeper
 			// when second die has no move doesn't add the solution
 			BGSnapshot newBoard;
-			List<Move> solution;
+			List<Move> solution = new List<Move>();
 			List<Move> moves = currentBoard.MoveDie2(dice.Pop());
-			if (moves.Count == 0 && dice.Count>0){
-				Compute(new Stack<int>(dice), currentSolution, finalSolution, currentBoard);
+			// this isn't the good fix it seems.
+//			Debug.Log(Move.ListMoveToString(moves));
+			if (moves.Count == 0 && dice.Count>0){ // use second die
+				solution = new List<Move>(currentSolution);
+				Compute(new Stack<int>(dice), solution, finalSolution, currentBoard);
+//				Debug.Log("moves.Count == 0 && dice.Count>0");
 			}
+			else if (moves.Count == 0 && dice.Count == 0 && currentSolution.Count > 0){
+				finalSolution.Add(currentSolution); 
+				// no move no dice ?
+			}
+
 			foreach(Move m in moves)
 			{
 				newBoard = currentBoard.ProjectMove(m);
 //				Debug.Log(string.Format("Played move : {0} {1}", m.source,m.dest));
-				solution = new List<Move>(currentSolution);
+				solution = new List<Move>(currentSolution); // BUG somewhere the solution get erased
 				solution.Add(m);
+//				Debug.Log(string.Format("Dice.count:{0}",dice.Count));
 				if (dice.Count == 0){ // No more Die to Compute
 				//addcurrentcolution To finalSolution
 					finalSolution.Add(solution); 

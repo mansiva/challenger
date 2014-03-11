@@ -79,7 +79,11 @@ namespace Backgammon
 
 			Debug.Log(snapshot.toString());
 			List<List <Move>> sols = snapshot.AllSolutions(d1, d2);
-			Debug.Log(string.Format("Solutions :{0}",sols.Count));
+//			Debug.Log(string.Format("Solutions :{0}",sols.Count));
+//			foreach (List <Move> s in sols){
+//				Debug.Log(string.Format("Solution :{0}",Move.ListMoveToString(s)));
+//
+//			}
 			if(sols.Count > 0){ // skip if there is no move
 				List<Move> rsol = sols[Random.Range(0, sols.Count)];
 				snapshot = snapshot.ProjectSolution( rsol ); 
