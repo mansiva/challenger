@@ -10,7 +10,6 @@ namespace Backgammon
 	//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
 	//The same checker may be moved twice as long as the two moves are distinct
 
-	// a move is a simple 2dvector / point structure.
 	public class Move
 	{
 		public int source;
@@ -31,7 +30,7 @@ namespace Backgammon
 			return this;
 		}
 		public string toString(){
-			return string.Format("{0}/{1}{2}{3}",source, dest, capture ? "*":"",bearoff ? "off":"");
+			return string.Format("{0}/{1}{2}",source, bearoff? "off" : ""+dest, capture ? "*":"");
 		}
 		
 		public static string ListMoveToString (List<Move> moves){
@@ -132,66 +131,6 @@ namespace Backgammon
 			}
 			return snapshot;
 		}
-
-//		// can the player bear off ?
-//		public bool BearingOff(){
-//			for(int i=7; i<26 ; i++){ // take the 25 bar into account
-//				if (snapshot[i] > 0){ // all token not in the home board
-//					return false;
-//				}
-//			}
-//			return true;
-//		}
-//		
-//		//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
-//		private bool BearingOffRule(int point, int die){ 
-//			if (!BearingOff()) return false; // you can't bear off
-//			if (die > point){ // trying to use a higher die on a lower point
-//				for(int i=point+1; i<7 ; i++){ // check if there is any checkers on any higher points.
-//					if (snapshot[i] > 1){
-//						return false;
-//					}
-//				}
-//			}
-//			return true;
-//		}
-//
-//		private List<int> PossibleSources(){
-//			List<int> solutions = new List<int> ();
-//			if (this.snapshot[25] != 0){ // player is forced to get bar in
-//				solutions.Add(25);
-//			}
-//			else {
-//				for (int i=1; i<25 ; i++){
-//					if (this.snapshot[i] > 0) solutions.Add(i);
-//				}
-//			}
-//			return solutions;
-////		}
-//
-//		// helper, give a list of move possible for one die
-//		private List<Move> MoveDie(int die){
-//			List<Move> solutions = new List<Move> ();
-//			// TBC
-//			List<int> sources = this.PossibleSources();
-//			for (int i=0 ; i < sources.Count ; i++){
-//				int destinationPoint = sources[i] - die; // update here bear off
-//				
-//				if ( destinationPoint >= 1 && snapshot[destinationPoint] >= -1) { // is the destination point in the board ?
-//					solutions.Add(new Move(sources[i],destinationPoint));
-//				}
-//				else { // BearOff possible ?
-//					if(BearingOffRule(sources[i], die)){
-//						Move m = new Move(sources[i],0); // we have no dest point, but bearOff is true
-//						m.bearoff = true;
-//						solutions.Add(m);//
-//					}
-//				}
-//			}
-//			//			Debug.Log ("MoveDie -> "+ListMoveInString(solutions));
-//			return solutions;
-//		}
-
 		// Updated, streamlined version, with only one scan of the Board
 		private List<Move> MoveDie2(int die){
 			List<Move> solutions = new List<Move> ();
@@ -231,7 +170,7 @@ namespace Backgammon
 							solutions.Add(m);
 						}
 						else {
-							Debug.Log("ouais");
+//							Debug.Log(string.Format("bearOff impossible i={0} bearOffIndex={1} die={2}", i,bearOffIndex,die));
 						}
 					}
 				}
