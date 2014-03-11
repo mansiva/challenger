@@ -222,7 +222,10 @@ namespace Backgammon
 				for (int i=die; i>0; i--) { // last tokens
 					if  (snapshot[i] > 0) { // is there a Tocken to consider ?
 						bearOffIndex = Math.Max(i,bearOffIndex); // the further tocken
-						if (bearOffIndex <= die){
+						// the rule here is that i can t use a die=5 on a token in i=4 if there is a token is index=6
+						//A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
+						// index=6  die=5 i=4
+						if (! (i < bearOffIndex && die > i)){
 							m = new Move(i,0 );
 							m.bearoff = true;
 							solutions.Add(m);
