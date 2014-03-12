@@ -10,8 +10,9 @@ namespace Backgammon
 		{
 			loaded,
 			started,
-			throwDice,
-			waitingForPlayersMove,
+			playerMove,
+			waitingForPlayersChoice,
+			waitingForPlayersValidation
 		}
 
 		// Temp dice
@@ -25,8 +26,11 @@ namespace Backgammon
 		// the Board is the view that can display a board
 		private Board board;
 		private BGSnapshot snapshot;
+		private int die1;
+		private int die2;
+		private List<List <Move>> sols;
 		private bool side; // true is black, false is white.
-		//private State currentState;
+		private State currentState;
 
 		// ------------------------------------------------------------
 		// Use this for initialization
@@ -48,7 +52,7 @@ namespace Backgammon
 		}
 
 		// ------------------------------------------------------------
-		// Reset board to starting position
+		// Reset board to starting position, also equal to give up
 		// ------------------------------------------------------------
 		void OnReset()
 		{
@@ -59,43 +63,107 @@ namespace Backgammon
 			board.SetSnapshot(snapshot);
 			//board.HomeBoard ();
 			//currentState = State.loaded;
-			side = true;
+			OnDecideSide();
 		}
 
+
+		// ------------------------------------------------------------
+		// Decide wich side should start the game, we decide you start with black :)
+		// ------------------------------------------------------------
+		void OnDecideSide(){
+			side = true;
+			currentState = State.waitingForPlayersChoice;
+		}
+
+		// ------------------------------------------------------------
+		// Throw Dice, calculate possible solutions
+		// ------------------------------------------------------------		
+		void OnThrowDice()
+		{
+			die1 = Random.Range(1,6);
+			die2 = Random.Range(1,6);
+			dice1.text = die1.ToString ();
+			dice2.text = die2.ToString ();
+			dice1.color = side? black:white;
+			dice2.color = side? black:white;
+			dice1.gameObject.SetActive(true);
+			dice2.gameObject.SetActive(true);
+
+			Debug.Log(snapshot.toString());
+			sols = snapshot.AllSolutions(die1, die2);
+			if(sols.Count == 0){ // forced pass
+				Debug.Log("No move possible");
+				OnPlayerValidate();
+			}
+			else if (sols.Count == 1){ // forced move
+				Debug.Log("Forced Move");
+				OnSimulate();
+			}
+			else {
+				currentState = State.playerMove;
+			}
+		}
 
 		// ------------------------------------------------------------
 		// Simulate next move
 		// ------------------------------------------------------------
 		void OnSimulate()
 		{
-			int d1 = Random.Range(1,6);
-			int d2 = Random.Range(1,6);
-//			int d1 = 1;
-//			int d2 = 6;
-			dice1.text = d1.ToString ();
-			dice2.text = d2.ToString ();
-			dice1.color = side? black:white;
-			dice2.color = side? black:white;
-
+			List<Move> rsol = sols[Random.Range(0, sols.Count)];
+			snapshot = snapshot.ProjectSolution( rsol ); 
+			if (!side){
+				Move.ListMoveReverse(rsol);
+			} 
 			Debug.Log(snapshot.toString());
-			List<List <Move>> sols = snapshot.AllSolutions(d1, d2);
-//			Debug.Log(string.Format("Solutions :{0}",sols.Count));
-//			foreach (List <Move> s in sols){
-//				Debug.Log(string.Format("Solution :{0}",Move.ListMoveToString(s)));
-//
-//			}
-			if(sols.Count > 0){ // skip if there is no move
-				List<Move> rsol = sols[Random.Range(0, sols.Count)];
-				snapshot = snapshot.ProjectSolution( rsol ); 
-				if (!side){
-	//				Debug.Log("Reversing for the board");
-					Move.ListMoveReverse(rsol);
-				} 
-				Debug.Log(snapshot.toString());
-				board.PlaySolution(rsol);
-			}
+			board.PlaySolution(rsol);
+			OnPlayerValidate();
+		}
+
+		// ------------------------------------------------------------
+		// Player just took his dice, to say his move was over
+		// ------------------------------------------------------------
+		void OnPlayerValidate()
+		{
+			Debug.Log("Should check if player won");
+			Debug.Log("Switch Player");
+			dice1.gameObject.SetActive(false);
+			dice2.gameObject.SetActive(false);
 			snapshot.Reverse();
 			side = !side;
+			currentState = State.waitingForPlayersChoice;
+		}
+
+		void OnForcedMove(){
+
+		}
+
+		void OnValidateMove(){
+			//player has finished its move, we check if it's valid
+			//we also check if this is a win
+			//it's now the opponent side
+			//opponent can chose to double, throw the dice or restart;
+		}
+
+		void OnDouble()
+		{
+
+		}
+
+		void OnWin(){
+			Debug.Log ("WIN");
+		}
+
+
+		void OnRightButtonClick(){
+			switch(currentState)
+			{
+			case State.waitingForPlayersChoice :
+				OnThrowDice();
+				break;
+			case State.playerMove:
+				OnSimulate();
+				break;
+			}
 		}
 
 	}
