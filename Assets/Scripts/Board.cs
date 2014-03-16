@@ -77,13 +77,13 @@ namespace Backgammon
 			// Create Capture Zones for dark
 			orientation = new Vector3 (270,0,0);
 			offset = new Vector3 (0, 0, -this.slotWidth);
-			slotPos = new Vector3(0, 0.1f, -this.slotWidth/2.0f);
+			slotPos = new Vector3(0, this.slotWidth/2.0f, -this.slotWidth/2.0f);
 			slots[0] = new TokenStack(slotPos, orientation,offset, 6);
 
 			// and light
 			orientation = new Vector3 (270,0,0);
 			offset = new Vector3 (0, 0, this.slotWidth);
-			slotPos = new Vector3(0, 0.1f, this.slotWidth/2.0f);
+			slotPos = new Vector3(0, this.slotWidth/2.0f, this.slotWidth/2.0f);
 			slots[25] = new TokenStack(slotPos, orientation,offset, 6);
 
 			// ref to Token

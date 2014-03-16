@@ -91,6 +91,8 @@ namespace Backgammon
 
 			Debug.Log(snapshot.toString());
 			sols = snapshot.AllSolutions(die1, die2);
+			Debug.Log("Number of solutions : "+sols.Count);
+
 			if(sols.Count == 0){ // forced pass
 				Debug.Log("No move possible");
 				OnPlayerValidate();
