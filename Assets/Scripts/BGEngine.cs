@@ -102,6 +102,13 @@ namespace Backgammon
 			return s;
 		}
 
+		public bool Win(){
+			for (int i=0 ; i<26 ; i++){
+				if (this.snapshot[i]>0)
+					return false;
+			}
+			return true;
+		}
 
 		// returns the new snapshot if move is played, assume validity of move
 		public BGSnapshot ProjectMove( Move m){
