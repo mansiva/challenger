@@ -95,19 +95,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 769682060bc90462bad820993df66002, type: 3}
       propertyPath: m_LocalRotation.x
-      value: .520958424
+      value: -1.1520229e-07
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 769682060bc90462bad820993df66002, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -.478123695
+      value: -.707106948
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 769682060bc90462bad820993df66002, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -.478123784
+      value: -.70710659
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 769682060bc90462bad820993df66002, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -.520958543
+      value: 1.15202347e-07
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 769682060bc90462bad820993df66002, type: 3}
@@ -217,7 +217,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 577032081}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -515.099731, y: -320, z: 0}
+  m_LocalPosition: {x: -580.392151, y: -320, z: 0}
   m_LocalScale: {x: .999900997, y: .999900997, z: .999900997}
   m_Children:
   - {fileID: 1990867086}
@@ -263,7 +263,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 787145108}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.911675155, y: -320, z: 0}
+  m_LocalPosition: {x: 1.04577875, y: -320, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1983003622}
@@ -732,11 +732,73 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1414159750}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 515.099731, y: -320, z: 0}
+  m_LocalPosition: {x: 580.392151, y: -320, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1941442824}
   m_Father: {fileID: 1130900540}
+--- !u!1 &1535316130
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1535316132}
+  - 108: {fileID: 1535316131}
+  m_Layer: 0
+  m_Name: Directional light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &1535316131
+Light:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1535316130}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Type: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: .340000004
+  m_Range: 10
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 2
+    m_Resolution: -1
+    m_Strength: 1
+    m_Bias: .0500000007
+    m_Softness: 4
+    m_SoftnessFade: 1
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_ActuallyLightmapped: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 1
+  m_ShadowSamples: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_IndirectIntensity: 1
+  m_AreaSize: {x: 1, y: 1}
+--- !u!4 &1535316132
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1535316130}
+  m_LocalRotation: {x: .887614608, y: 0, z: 0, w: .460586965}
+  m_LocalPosition: {x: 0, y: 1.92606068, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
 --- !u!1 &1761180418
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,7 +868,7 @@ Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 769682060bc90462bad820993df66002, type: 3}
   m_PrefabInternal: {fileID: 23588833}
   m_GameObject: {fileID: 1761180418}
-  m_LocalRotation: {x: .520958424, y: -.478123695, z: -.478123784, w: -.520958543}
+  m_LocalRotation: {x: -1.1520229e-07, y: -.707106948, z: -.70710659, w: 1.15202347e-07}
   m_LocalPosition: {x: -2, y: -7.38178528e-07, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
