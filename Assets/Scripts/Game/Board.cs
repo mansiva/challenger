@@ -109,7 +109,9 @@ namespace Backgammon
 		public void InitBoard(){
 			bool side;
 			for (int i = 0; i < 30; i++){
-				Token t = NGUITools.AddChild(gameObject, prefabPeon).GetComponent<Token>();
+				Token t = (Instantiate(Resources.Load("Token")) as GameObject).GetComponent<Token>();
+				t.transform.parent = transform;
+
 				side = (i<15); // a verifier
 				t.SetSide(side);
 				homes[side? 1:0].AddToken(t);

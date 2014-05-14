@@ -16,7 +16,7 @@ namespace Backgammon
 		{
 //			transform.localRotation = new Vector3(0,0,0);
 			//			transform.Rotate(270,0,0);
-			transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
+			//transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
 		}
 
 		public void SetSide(bool side)

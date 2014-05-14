@@ -39,7 +39,9 @@ namespace Backgammon
 		{
 			if (board != null)
 				Destroy (board.gameObject);
-			board = NGUITools.AddChild(gameObject, Resources.Load<GameObject>("Board")).GetComponent<Board>();
+			board = (Instantiate(Resources.Load("Board")) as GameObject).GetComponent<Board>();
+			board.transform.parent = transform;
+			//board = NGUITools.AddChild(gameObject, Resources.Load<GameObject>("Board")).GetComponent<Board>();
 			board.InitBoard (); // creates the token
 			white = new Color(1,1,1);
 			black = new Color(0,0,0);
@@ -54,7 +56,7 @@ namespace Backgammon
 		// ------------------------------------------------------------
 		// Reset board to starting position, also equal to give up
 		// ------------------------------------------------------------
-		void OnReset()
+		public void OnReset()
 		{
 			dice1.text = "";
 			dice2.text = "";
@@ -156,7 +158,8 @@ namespace Backgammon
 		}
 
 
-		void OnRightButtonClick(){
+		public void OnRightButtonClick(){
+			Debug.Log ("State=" + currentState.ToString());
 			switch(currentState)
 			{
 			case State.waitingForPlayersChoice :

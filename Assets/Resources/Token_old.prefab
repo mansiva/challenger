@@ -10,9 +10,9 @@ GameObject:
   - 4: {fileID: 400000}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
-  - 95: {fileID: 9500000}
+  - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: token_black_low
+  m_Name: Token_old
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,8 +24,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: .520958424, y: -.478123695, z: -.478123784, w: -.520958543}
-  m_LocalPosition: {x: -2, y: -7.38178528e-07, z: 2}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -41,7 +41,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 4037f7630ab554dc987a4f5f34a03118, type: 2}
+  - {fileID: 2100000, guid: b0d44928ed20b473f9f95cb42c77c4b4, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -56,21 +56,21 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_Mesh: {fileID: 4300000, guid: 769682060bc90462bad820993df66002, type: 3}
---- !u!95 &9500000
-Animator:
-  serializedVersion: 2
+  m_Mesh: {fileID: 4300000, guid: 6f62eba84c7c74469a2a87095ab7c9d0, type: 3}
+--- !u!114 &11400000
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 769682060bc90462bad820993df66002, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_ApplyRootMotion: 1
-  m_AnimatePhysics: 0
-  m_HasTransformHierarchy: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a50eeab367210245bc6402bed2d00a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tokenColorDark: {r: 0, g: 0, b: 0, a: 0}
+  tokenColorLight: {r: .760784328, g: .964705884, b: .862745106, a: 0}
+  side: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
