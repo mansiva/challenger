@@ -28,7 +28,11 @@ GameObject:
   - 23: {fileID: 2300000}
   - 95: {fileID: 9500000}
   m_Layer: 0
+<<<<<<< .merge_file_JC9YmV
   m_Name: board_model_low
+=======
+  m_Name: board_low
+>>>>>>> .merge_file_7ElI5r
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,8 +44,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
+<<<<<<< .merge_file_JC9YmV
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+=======
+  m_LocalRotation: {x: -.608761489, y: 0, z: 0, w: .793353379}
+  m_LocalPosition: {x: 0, y: 2, z: 25}
+>>>>>>> .merge_file_7ElI5r
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
@@ -52,8 +61,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
+<<<<<<< .merge_file_JC9YmV
   m_LocalRotation: {x: .70710659, y: 0, z: 0, w: -.707106948}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+=======
+  m_LocalRotation: {x: -.707106829, y: 0, z: 0, w: .707106829}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+>>>>>>> .merge_file_7ElI5r
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -84,7 +98,11 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
+<<<<<<< .merge_file_JC9YmV
   m_Mesh: {fileID: 4300000, guid: 5cd35bb03b7e541469e0f1721ac09e94, type: 3}
+=======
+  m_Mesh: {fileID: 4300048, guid: e4121480314cd403194290a85ab426dd, type: 3}
+>>>>>>> .merge_file_7ElI5r
 --- !u!95 &9500000
 Animator:
   serializedVersion: 2
@@ -93,7 +111,11 @@ Animator:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
+<<<<<<< .merge_file_JC9YmV
   m_Avatar: {fileID: 9000000, guid: 5cd35bb03b7e541469e0f1721ac09e94, type: 3}
+=======
+  m_Avatar: {fileID: 9000000, guid: e4121480314cd403194290a85ab426dd, type: 3}
+>>>>>>> .merge_file_7ElI5r
   m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_ApplyRootMotion: 1
@@ -110,11 +132,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79db46c78001a34429cbe74e651e243f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< .merge_file_JC9YmV
   spineWidth: 1
   borderWidth: .5
   slotWidth: 1
   slotHeight: 7
   tokenWidth: .200000003
+=======
+  spineWidth: 2
+  borderWidth: 1
+  slotWidth: 2
+  slotHeight: 14
+  tokenWidth: 2
+>>>>>>> .merge_file_7ElI5r
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
