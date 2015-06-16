@@ -68,12 +68,12 @@ public class UI2DButton : UIButtonColor
 		get
 		{
 			if (!enabled) return false;
-			Collider2D col = collider2D;
+			Collider2D col = GetComponent<Collider2D>();
 			return col && col.enabled;
 		}
 		set
 		{
-			Collider2D col = collider2D;
+			Collider2D col = GetComponent<Collider2D>();
 
 			if (col != null)
 			{

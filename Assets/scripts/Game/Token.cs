@@ -23,9 +23,9 @@ namespace Backgammon
 		{
 			this.side = side;
 			if (!side)
-				renderer.material.color = tokenColorLight;
+				GetComponent<Renderer>().material.color = tokenColorLight;
 			else
-				renderer.material.color = tokenColorDark;
+				GetComponent<Renderer>().material.color = tokenColorDark;
 		}
 
 //		public void SetState(Board.TokenState tokenState)
