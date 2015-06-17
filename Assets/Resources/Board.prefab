@@ -100,11 +100,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79db46c78001a34429cbe74e651e243f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spineWidth: 10
-  borderWidth: 10
-  slotWidth: 1
-  slotHeight: 1
-  tokenWidth: 1
+  spineWidth: 2
+  borderWidth: 1
+  slotWidth: 2
+  slotHeight: 14
+  tokenWidth: .600000024
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

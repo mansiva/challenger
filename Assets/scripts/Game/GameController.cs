@@ -106,6 +106,8 @@ namespace Backgammon
 			}
 			else {
 				currentState = State.playerMove;
+				Debug.Log("Normal Move");
+				OnSimulate();
 			}
 		}
 
