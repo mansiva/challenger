@@ -1,3 +1,6 @@
 lastUpgrade=00920
 proj.AppId=171030208952
 android.SetupDone=true
+ios.ClientId=171030208952-8sd752qoc1lskkuljfn4de6b9n2pobra.apps.googleusercontent.com
+ios.BundleId=com.mansueto.backgammon
+ios.SetupDone=true
