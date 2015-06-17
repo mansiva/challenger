@@ -156,5 +156,8 @@ namespace Backgammon
 				PlayMove(solution[i]);
 			}
 		}
+		void OnDrawGizmos(){
+			Gizmos.DrawWireCube(Vector3.zero,new Vector3(spineWidth,1,1));
+		}
 	}
 }

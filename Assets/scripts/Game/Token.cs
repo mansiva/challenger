@@ -9,6 +9,9 @@ namespace Backgammon
 		//public static Board board;
 		public Color tokenColorDark;
 		public Color tokenColorLight;
+		public Material white;
+		public Material black;
+		public GameObject renderer;
 		public bool side; // white 0 dark 1
 
 		// Use this for initialization
@@ -23,9 +26,9 @@ namespace Backgammon
 		{
 			this.side = side;
 			if (!side)
-				GetComponent<Renderer>().material.color = tokenColorLight;
+				renderer.GetComponent<Renderer>().material = white;
 			else
-				GetComponent<Renderer>().material.color = tokenColorDark;
+				renderer.GetComponent<Renderer>().material = black;
 		}
 
 //		public void SetState(Board.TokenState tokenState)

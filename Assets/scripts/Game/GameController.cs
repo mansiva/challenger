@@ -81,7 +81,7 @@ namespace Backgammon
 		// ------------------------------------------------------------
 		// Throw Dice, calculate possible solutions
 		// ------------------------------------------------------------		
-		void OnThrowDice()
+		public void OnThrowDice()
 		{
 			die1 = Random.Range(1,6);
 			die2 = Random.Range(1,6);
@@ -112,7 +112,7 @@ namespace Backgammon
 		// ------------------------------------------------------------
 		// Simulate next move
 		// ------------------------------------------------------------
-		void OnSimulate()
+		public void OnSimulate()
 		{
 			List<Move> rsol = sols[Random.Range(0, sols.Count)];
 			snapshot = snapshot.ProjectSolution( rsol ); 
