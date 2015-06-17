@@ -39,7 +39,7 @@ namespace Challenger
 				if (Resources.Load<TextAsset>("Localization/" + Application.systemLanguage.ToString()) == null)
 				    language = "English";
 
-				Localization.language = language;
+				//Localization.language = language;
 
 				// Set Version
 				SetVersion(version);

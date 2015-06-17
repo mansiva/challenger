@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace Backgammon
 {
@@ -16,8 +17,8 @@ namespace Backgammon
 		}
 
 		// Temp dice
-		public UILabel dice1;
-		public UILabel dice2;
+		public Text dice1;
+		public Text dice2;
 		// Temp colors b & w
 		private Color black;
 		private Color white;
