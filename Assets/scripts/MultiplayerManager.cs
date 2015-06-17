@@ -11,6 +11,7 @@ public class MultiplayerManager : MonoBehaviour
 	TurnBasedMatch mIncomingMatch = null;
 	Invitation mIncomingInvite = null;
 
+	bool pressedButton = false;
 	bool mInMatch = false;
 	System.Action<bool> mAuthCallback;
 
@@ -79,6 +80,9 @@ public class MultiplayerManager : MonoBehaviour
 
 	#endregion
 
+
+	#region System Events
+
 	protected void OnGotInvitation(Invitation invitation, bool shouldAutoAccept)
 	{
 		if (invitation.InvitationType != Invitation.InvType.TurnBased) {
@@ -103,10 +107,65 @@ public class MultiplayerManager : MonoBehaviour
 		}
 	}
 
+	#endregion
 
+
+	void OnMatchCancelled()
+	{
+		mIncomingMatch = null;
+	}
+
+	void OnMatchComplete()
+	{
+		TurnBasedMatch match = mIncomingMatch;
+		mIncomingMatch = null;
+		OnMatchStarted (true, match);
+	}
+
+	void OnMatchPlay()
+	{
+		TurnBasedMatch match = mIncomingMatch;
+		mIncomingMatch = null;
+		OnMatchStarted (true, match);
+	}
+	
+	void Update()
+	{
+		string info;
+
+		if (mIncomingMatch)
+			Show
+		{
+			switch (mIncomingMatch.Status)
+			{
+			case TurnBasedMatch.MatchStatus.Cancelled:
+				// TODO: Show button
+				info = Util.GetOpponentName (mIncomingMatch) + " declined your invitation";
+				break;
+
+			case TurnBasedMatch.MatchStatus.Complete:
+				// TODO: Show button
+				info = "Your match with " + Util.GetOpponentName (mIncomingMatch) + " is over...";
+				break;
+				
+			default:
+				switch (mIncomingMatch.TurnStatus) {
+				case TurnBasedMatch.MatchTurnStatus.MyTurn:
+					info = "It's your turn against " + Util.GetOpponentName (mIncomingMatch);
+					break;
+				default:
+					info = Util.GetOpponentName (mIncomingMatch) + " accepted your invitation";
+					break;
+				}
+				break;
+			}
+		}
+	}
+
+	
 	public void OnMatchStarted(TurnBasedMatch match) {
 		mMatch = match;
-
+		
 		if (mMatch == null) {
 			throw new System.Exception("PlayGui can't be started without a match!");
 		}
